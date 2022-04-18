@@ -21,12 +21,9 @@ class Robot(object):
         self.x_shift_back = -0.03
         self.default_height = 0.15
 
-        self.trotGaitController = TrotGaitController(self.default_stance,
-            stance_time = 0.18, swing_time = 0.24, time_step = 0.02,
-            use_imu = imu)
+        self.trotGaitController = TrotGaitController(self.default_stance, stance_time = 0.18, swing_time = 0.24, time_step = 0.02, use_imu = imu)
 
-        self.crawlGaitController = CrawlGaitController(self.default_stance,
-            stance_time = 0.55, swing_time = 0.45, time_step = 0.02)
+        self.crawlGaitController = CrawlGaitController(self.default_stance, stance_time = 0.55, swing_time = 0.45, time_step = 0.02)
             
         self.standController = StandController(self.default_stance)
 
@@ -73,24 +70,27 @@ class Robot(object):
             self.command.crawl_event = False
             self.command.stand_event = False
             self.command.rest_event = True
-            
+            print("rest")
         elif msg.buttons[1]: # trot
             self.command.trot_event = True
             self.command.crawl_event = False
             self.command.stand_event = False
             self.command.rest_event = False
+            print("trot")
 
         elif msg.buttons[2]: # crawl
             self.command.trot_event = False
             self.command.crawl_event = True
             self.command.stand_event = False
             self.command.rest_event = False
-       
+            print("crawl")
+
         elif msg.buttons[3]: # stand
             self.command.trot_event = False
             self.command.crawl_event = False
             self.command.stand_event = True
             self.command.rest_event = False
+            print("stand")
       
         self.currentController.updateStateCommand(msg, self.state, self.command)
 

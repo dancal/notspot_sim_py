@@ -67,6 +67,7 @@ while not rospy.is_shutdown():
 
         for i in range(len(joint_angles)):
             publishers[i].publish(joint_angles[i])
+        
     except:
         pass
 

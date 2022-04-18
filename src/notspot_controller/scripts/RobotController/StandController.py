@@ -15,7 +15,7 @@ class StandController(object):
         self.FL_Y = 0.
 
     def updateStateCommand(self,msg,state,command):
-        state.body_local_position[0] = msg.axes[7] * 0.14;
+        state.body_local_position[0] = msg.axes[7] * 0.14
         self.FR_X = msg.axes[1]
         self.FR_Y = msg.axes[0]
 
