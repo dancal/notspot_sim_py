@@ -77,7 +77,13 @@ while not rospy.is_shutdown():
             #    publishers[i].publish(joint_angles[i])
 
             # Return joint angles in radians - FR, FL, RR, RL
-            print(joint_angles, rospy.is_shutdown())
+            # yleg = step_angle * math.sin(2 * math.pi * t / radio )
+            # yfoot = step_trip * (-math.sin(2 * math.pi * t / radio)) + offset
+            servo_angles    = []
+            for pos in joint_angles:
+                servo_angles.append( pos * 180 )
+
+            print(servo_angles)
 
         org_joint_angles    = joint_angles
     except:
