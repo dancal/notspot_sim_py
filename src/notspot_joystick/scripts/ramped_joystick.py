@@ -29,6 +29,7 @@ class PS3Controller(object):
     axis_data = None
     button_data = None
     hat_data = None
+    clock           = pygame.time.Clock()
 
     def init(self, rate):
         """Initialize the joystick components"""
@@ -47,62 +48,82 @@ class PS3Controller(object):
         pygame.joystick.init()
 
         clock           = pygame.time.Clock()
-
         joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
         for joy in joysticks:
             print(joy.get_name(), joy.get_id(), joy.get_guid(), joy.get_instance_id())
 
-        joystick1           = pygame.joystick.get_count()
-        self.controller = pygame.joystick.Joystick(0)
-        self.controller.init()
+        joystickCount   = pygame.joystick.get_count()
+        if joystickCount > 0:
+            self.controller = pygame.joystick.Joystick(0)
+            self.controller.init()
+        else:
+            pygame.display.set_caption("SPOTMICRO")
+            self.screen      = pygame.display.set_mode((600, 600))
 
-        if not self.hat_data:
-            self.hat_data = {}
-            for i in range(self.controller.get_numhats()):
-                self.hat_data[i] = (0, 0)
+        #if not self.hat_data:
+        #    self.hat_data = {}
+        #    for i in range(self.controller.get_numhats()):
+        #        self.hat_data[i] = (0, 0)
 
         self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
         self.button_data    = [0,0,0,0,0,0,0,0,0,0,0]
         while not rospy.is_shutdown():
-            
+
             evnet_changes   = False
-            for event in pygame.event.get():
-                if event.type == pygame.JOYAXISMOTION:
+            if joystickCount <= 0:
+                for event in pygame.event.get():
                     evnet_changes               = True
-                    self.axis_data[event.axis]  = (round(event.value,2) * -1) * self.available_speeds[self.speed_index]
-                    #print(self.axis_data[event.axis])
-                    #self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
-                    #self.axis_data[event.axis] = self.ramped_vel(self.axis_data_org[event.axis], event.value, self.last_send_time, t_now)
-                elif event.type == pygame.JOYBUTTONUP:
-                    if event.button == 5:        # return
-                        self.speed_index += 1
-                        if self.speed_index >= len(self.available_speeds):
-                            self.speed_index = 0
-                        rospy.loginfo(f"Joystick speed:{self.available_speeds[self.speed_index]}")
-                    elif event.button == 9:      # list
-                        self.speed_index -= 1
-                        if self.speed_index < 0:
-                            self.speed_index = 0
-                        rospy.loginfo(f"Joystick speed:{self.available_speeds[self.speed_index]}")
-                elif event.type == pygame.JOYBUTTONDOWN:
-                    evnet_changes       = True
-                    if event.button == 0:      # A
-                        self.button_data    = [1,0,0,0,0,0,0,0,0,0,0]
-                        rospy.loginfo("rest")
-                    elif event.button == 1:      # B
-                        self.button_data    = [0,1,0,0,0,0,0,0,0,0,0]                     
-                        rospy.loginfo("trot")
-                    elif event.button == 3:      # X
-                        self.button_data    = [0,0,1,0,0,0,0,0,0,0,0]                   
-                        rospy.loginfo("crawl")
-                    elif event.button == 4:      # Y
-                        self.button_data    = [0,0,0,1,0,0,0,0,0,0,0]                 
-                        rospy.loginfo("stand")
-                    else:
-                        self.button_data    = [0,0,0,0,0,0,0,0,0,0,0]
-                        #self.button_data[event.button] = 1
-                elif event.type == pygame.JOYHATMOTION:
-                    self.hat_data[event.hat] = event.value
+                    if event.type == pygame.KEYDOWN:
+                        print(event.key)
+                        if event.key == pygame.K_LEFT:
+                            self.axis_data[3]  = (round(-1,2) * -1) * self.available_speeds[self.speed_index]
+                        if event.key == pygame.K_RIGHT:
+                            self.axis_data[5]  = (round(1,2) * -1) * self.available_speeds[self.speed_index]
+                        if event.key == pygame.K_UP:
+                            self.axis_data[0]  = (round(-1,2) * -1) * self.available_speeds[self.speed_index]
+                        if event.key == pygame.K_DOWN:
+                            self.axis_data[1]  = (round(1,2) * -1) * self.available_speeds[self.speed_index]
+                    elif event.type == pygame.KEYUP:
+                        self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
+
+            else:
+                for event in pygame.event.get():
+                    if event.type == pygame.JOYAXISMOTION:
+                        evnet_changes               = True
+                        self.axis_data[event.axis]  = (round(event.value,2) * -1) * self.available_speeds[self.speed_index]
+                        #print(self.axis_data[event.axis])
+                        #self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
+                        #self.axis_data[event.axis] = self.ramped_vel(self.axis_data_org[event.axis], event.value, self.last_send_time, t_now)
+                    elif event.type == pygame.JOYBUTTONUP:
+                        if event.button == 5:        # return
+                            self.speed_index += 1
+                            if self.speed_index >= len(self.available_speeds):
+                                self.speed_index = 0
+                            rospy.loginfo(f"Joystick speed:{self.available_speeds[self.speed_index]}")
+                        elif event.button == 9:      # list
+                            self.speed_index -= 1
+                            if self.speed_index < 0:
+                                self.speed_index = 0
+                            rospy.loginfo(f"Joystick speed:{self.available_speeds[self.speed_index]}")
+                    elif event.type == pygame.JOYBUTTONDOWN:
+                        evnet_changes       = True
+                        if event.button == 0:      # A
+                            self.button_data    = [1,0,0,0,0,0,0,0,0,0,0]
+                            rospy.loginfo("rest")
+                        elif event.button == 1:      # B
+                            self.button_data    = [0,1,0,0,0,0,0,0,0,0,0]                     
+                            rospy.loginfo("trot")
+                        elif event.button == 3:      # X
+                            self.button_data    = [0,0,1,0,0,0,0,0,0,0,0]                   
+                            rospy.loginfo("crawl")
+                        elif event.button == 4:      # Y
+                            self.button_data    = [0,0,0,1,0,0,0,0,0,0,0]                 
+                            rospy.loginfo("stand")
+                        else:
+                            self.button_data    = [0,0,0,0,0,0,0,0,0,0,0]
+                            #self.button_data[event.button] = 1
+                    elif event.type == pygame.JOYHATMOTION:
+                        self.hat_data[event.hat] = event.value
 
             if evnet_changes == True:
                 joy                 = Joy()
@@ -112,9 +133,10 @@ class PS3Controller(object):
                 self.publisher.publish(joy)
                 print(joy.buttons)
 
-            self.rate.sleep()
+            #self.rate.sleep()
+            self.clock.tick(30)
 
 if __name__ == "__main__":
     ps4 = PS3Controller()
-    ps4.init(rate = 20)
+    ps4.init(rate = 60)
     ps4.listen()

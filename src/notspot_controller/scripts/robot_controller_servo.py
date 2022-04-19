@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 #Author: lnotspotl
 
+from xmlrpc.client import FastMarshaller
 import rospy
 
 from sensor_msgs.msg import Joy,Imu
 from RobotController import RobotController
 from InverseKinematics import robot_IK
 from std_msgs.msg import Float64
+from time import sleep, time
+import pygame
+from numpy import array_equal
 
 USE_IMU = True
 RATE = 60
@@ -38,7 +42,7 @@ for i in range(len(command_topics)):
     publishers.append(rospy.Publisher(command_topics[i], Float64, queue_size = 0))
 
 if USE_IMU:
-    rospy.Subscriber("notspot_imu/base_link_orientation",Imu,notspot_robot.imu_orientation)
+    rospy.Subscriber("notspot_imu/base_link_orientation", Imu, notspot_robot.imu_orientation)
 rospy.Subscriber("notspot_joy/joy_ramped",Joy,notspot_robot.joystick_command)
 
 rate = rospy.Rate(RATE)
@@ -47,8 +51,10 @@ del body
 del legs
 del command_topics
 del USE_IMU
-del RATE
+#del RATE
 
+clock           = pygame.time.Clock()
+org_joint_angles    = []
 while not rospy.is_shutdown():
     leg_positions = notspot_robot.run()
     notspot_robot.change_controller()
@@ -60,15 +66,22 @@ while not rospy.is_shutdown():
     roll = notspot_robot.state.body_local_orientation[0]
     pitch = notspot_robot.state.body_local_orientation[1]
     yaw = notspot_robot.state.body_local_orientation[2]
-
     try:
         joint_angles = inverseKinematics.inverse_kinematics(leg_positions, dx, dy, dz, roll, pitch, yaw)
 
-        for i in range(len(joint_angles)):
-            publishers[i].publish(joint_angles[i])
+        bChanges     = array_equal(joint_angles, org_joint_angles)
+        #bChanges     = FastMarshaller
 
-        print(joint_angles)
+        if not bChanges:
+            #for i in range(len(joint_angles)):
+            #    publishers[i].publish(joint_angles[i])
+
+            # Return joint angles in radians - FR, FL, RR, RL
+            print(joint_angles, rospy.is_shutdown())
+
+        org_joint_angles    = joint_angles
     except:
         pass
 
-    rate.sleep()
+    clock.tick(RATE)
+    #rate.sleep()
