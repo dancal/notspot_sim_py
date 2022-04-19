@@ -73,15 +73,15 @@ while not rospy.is_shutdown():
         #bChanges     = FastMarshaller
 
         if not bChanges:
-            #for i in range(len(joint_angles)):
-            #    publishers[i].publish(joint_angles[i])
+            for i in range(len(joint_angles)):
+                publishers[i].publish(joint_angles[i])
 
             # Return joint angles in radians - FR, FL, RR, RL
             # yleg = step_angle * math.sin(2 * math.pi * t / radio )
             # yfoot = step_trip * (-math.sin(2 * math.pi * t / radio)) + offset
             servo_angles    = []
             for pos in joint_angles:
-                servo_angles.append( pos * 180 )
+                servo_angles.append( pos/2 * 180 )
 
             print(servo_angles)
 

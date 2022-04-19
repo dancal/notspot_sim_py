@@ -75,6 +75,8 @@ class PS3Controller(object):
                     evnet_changes               = True
                     if event.type == pygame.KEYDOWN:
                         print(event.key)
+                        #self.button_data    = [0,0,1,0,0,0,0,0,0,0,0] 
+                        self.button_data    = [0,1,0,0,0,0,0,0,0,0,0]      
                         if event.key == pygame.K_LEFT:
                             self.axis_data[3]  = (round(-1,2) * -1) * self.available_speeds[self.speed_index]
                         if event.key == pygame.K_RIGHT:
