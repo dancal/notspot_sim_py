@@ -70,27 +70,24 @@ class Robot(object):
             self.command.crawl_event = False
             self.command.stand_event = False
             self.command.rest_event = True
-            print("rest")
+
         elif msg.buttons[1]: # trot
             self.command.trot_event = True
             self.command.crawl_event = False
             self.command.stand_event = False
             self.command.rest_event = False
-            print("trot")
 
         elif msg.buttons[2]: # crawl
             self.command.trot_event = False
             self.command.crawl_event = True
             self.command.stand_event = False
             self.command.rest_event = False
-            print("crawl")
 
         elif msg.buttons[3]: # stand
             self.command.trot_event = False
             self.command.crawl_event = False
             self.command.stand_event = True
             self.command.rest_event = False
-            print("stand")
       
         self.currentController.updateStateCommand(msg, self.state, self.command)
 

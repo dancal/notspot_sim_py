@@ -7,10 +7,12 @@ import rospy
 from sensor_msgs.msg import Joy,Imu
 from RobotController import RobotController
 from InverseKinematics import robot_IK
+from RobotHardwares import RobotHardwares 
 from std_msgs.msg import Float64
 from time import sleep, time
 import pygame
-from numpy import array_equal
+from numpy import array_equal, sin, cos, pi
+import numpy as np
 
 USE_IMU = True
 RATE = 60
@@ -21,8 +23,9 @@ rospy.init_node("Robot_Controller")
 body = [0.1908, 0.080]
 legs = [0.0, 0.04, 0.100, 0.094333] 
 
-notspot_robot = RobotController.Robot(body, legs, USE_IMU)
-inverseKinematics = robot_IK.InverseKinematics(body, legs)
+notspot_robot       = RobotController.Robot(body, legs, USE_IMU)
+inverseKinematics   = robot_IK.InverseKinematics(body, legs)
+servoControllers    = RobotHardwares.ServoController()
 
 command_topics = ["/notspot_controller/FR1_joint/command",
                   "/notspot_controller/FR2_joint/command",
@@ -53,8 +56,10 @@ del command_topics
 del USE_IMU
 #del RATE
 
+#deg2rad         = pi/180
+#rad2deg         = 180/pi
 clock           = pygame.time.Clock()
-org_joint_angles    = []
+servo_angles_   = []
 while not rospy.is_shutdown():
     leg_positions = notspot_robot.run()
     notspot_robot.change_controller()
@@ -67,25 +72,22 @@ while not rospy.is_shutdown():
     pitch = notspot_robot.state.body_local_orientation[1]
     yaw = notspot_robot.state.body_local_orientation[2]
     try:
+        # self.servo_rear_shoulder_left = servo.Servo(self.pca9685_1.channels[self.servo_rear_shoulder_left_channel])
+        # FR, FL, RR, RL
         joint_angles = inverseKinematics.inverse_kinematics(leg_positions, dx, dy, dz, roll, pitch, yaw)
 
-        bChanges     = array_equal(joint_angles, org_joint_angles)
-        #bChanges     = FastMarshaller
+        servo_angles    = []
+        for i in range(len(joint_angles)):
+            servo_angles.append( int(np.rad2deg(joint_angles[i])) )
 
-        if not bChanges:
+        bEqual          = array_equal(servo_angles_, servo_angles)
+        if not bEqual:
+            servoControllers.move(servo_angles)
+
             for i in range(len(joint_angles)):
                 publishers[i].publish(joint_angles[i])
-
-            # Return joint angles in radians - FR, FL, RR, RL
-            # yleg = step_angle * math.sin(2 * math.pi * t / radio )
-            # yfoot = step_trip * (-math.sin(2 * math.pi * t / radio)) + offset
-            servo_angles    = []
-            for pos in joint_angles:
-                servo_angles.append( pos/2 * 180 )
-
-            print(servo_angles)
-
-        org_joint_angles    = joint_angles
+            
+        servo_angles_    = servo_angles
     except:
         pass
 

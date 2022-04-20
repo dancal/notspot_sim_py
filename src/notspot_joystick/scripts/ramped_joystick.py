@@ -25,12 +25,14 @@ from sensor_msgs.msg import Joy
 class PS3Controller(object):
     """Class representing the PS4 controller. Pretty straightforward functionality."""
 
-    controller = None
-    axis_data = None
-    button_data = None
-    hat_data = None
+    controller      = None
+    axis_data       = None
+    button_data     = None
+    axis_data_pre   = None
+    button_data_pre = None
+    hat_data        = None
     clock           = pygame.time.Clock()
-
+    is_activated    = False
     def init(self, rate):
         """Initialize the joystick components"""
 
@@ -60,13 +62,16 @@ class PS3Controller(object):
             pygame.display.set_caption("SPOTMICRO")
             self.screen      = pygame.display.set_mode((600, 600))
 
-        #if not self.hat_data:
-        #    self.hat_data = {}
-        #    for i in range(self.controller.get_numhats()):
-        #        self.hat_data[i] = (0, 0)
+        if not self.hat_data:
+            self.hat_data = {}
+            for i in range(self.controller.get_numhats()):
+                self.hat_data[i] = (0, 0)
 
-        self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
-        self.button_data    = [0,0,0,0,0,0,0,0,0,0,0]
+        self.axis_data          = [0.,0.,1.,0.,0.,1.,0.,0.]
+        self.button_data        = [0,0,0,0,0,0,0,0,0,0,0]
+        self.axis_data_pre      = [0.,0.,1.,0.,0.,1.,0.,0.]
+        self.button_data_pre    = [0,0,0,0,0,0,0,0,0,0,0]
+
         while not rospy.is_shutdown():
 
             evnet_changes   = False
@@ -89,7 +94,9 @@ class PS3Controller(object):
                         self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
 
             else:
+
                 for event in pygame.event.get():
+                    logMessage      = ""
                     if event.type == pygame.JOYAXISMOTION:
                         evnet_changes               = True
                         self.axis_data[event.axis]  = (round(event.value,2) * -1) * self.available_speeds[self.speed_index]
@@ -101,39 +108,67 @@ class PS3Controller(object):
                             self.speed_index += 1
                             if self.speed_index >= len(self.available_speeds):
                                 self.speed_index = 0
-                            rospy.loginfo(f"Joystick speed:{self.available_speeds[self.speed_index]}")
+                            logMessage          = "Joystick speed: " + str(self.available_speeds[self.speed_index])
+
                         elif event.button == 9:      # list
                             self.speed_index -= 1
                             if self.speed_index < 0:
                                 self.speed_index = 0
-                            rospy.loginfo(f"Joystick speed:{self.available_speeds[self.speed_index]}")
-                    elif event.type == pygame.JOYBUTTONDOWN:
-                        evnet_changes       = True
+                            logMessage          = "Joystick speed: " + str(self.available_speeds[self.speed_index])
+
+                        elif event.button == 11:      # start
+                            # Press START/OPTIONS to enable the servos
+                            self.axis_data          = [0.,0.,1.,0.,0.,1.,0.,0.]
+                            self.button_data        = [1,0,0,0,0,0,0,0,0,0,0]
+                            if self.is_activated:
+                                self.is_activated   = False
+                                logMessage          = 'STOP'
+                            else:
+                                self.is_activated   = True
+                                logMessage          = 'START'
+
+                    elif event.type == pygame.JOYBUTTONDOWN and self.is_activated:
                         if event.button == 0:      # A
                             self.button_data    = [1,0,0,0,0,0,0,0,0,0,0]
-                            rospy.loginfo("rest")
+                            logMessage          = "rest"
                         elif event.button == 1:      # B
                             self.button_data    = [0,1,0,0,0,0,0,0,0,0,0]                     
-                            rospy.loginfo("trot")
+                            logMessage          = "trot"
                         elif event.button == 3:      # X
                             self.button_data    = [0,0,1,0,0,0,0,0,0,0,0]                   
-                            rospy.loginfo("crawl")
+                            logMessage          = "crawl"
                         elif event.button == 4:      # Y
                             self.button_data    = [0,0,0,1,0,0,0,0,0,0,0]                 
-                            rospy.loginfo("stand")
-                        else:
-                            self.button_data    = [0,0,0,0,0,0,0,0,0,0,0]
-                            #self.button_data[event.button] = 1
+                            logMessage          = "stand"
+ 
                     elif event.type == pygame.JOYHATMOTION:
                         self.hat_data[event.hat] = event.value
+                    else:
+                        evnet_changes           = True
 
-            if evnet_changes == True:
-                joy                 = Joy()
-                joy.header.stamp    = rospy.Time.now()
-                joy.axes            = self.axis_data
-                joy.buttons         = self.button_data
-                self.publisher.publish(joy)
-                print(joy.buttons)
+                    bEqualBtn   = array_equal(self.button_data_pre, self.button_data)
+                    bEqualAxis  = array_equal(self.axis_data_pre, self.axis_data)
+                    if not bEqualBtn or not bEqualAxis:
+                        evnet_changes   = True
+
+                    self.button_data_pre    = self.button_data
+                    self.axis_data_pre      = self.axis_data
+
+                if not self.is_activated and evnet_changes:
+                    rospy.loginfo('Press START/OPTIONS to enable the servos')
+                    continue
+
+                if (evnet_changes == True) and (self.is_activated == True):
+                    joy                 = Joy()
+                    joy.header.stamp    = rospy.Time.now()
+                    joy.axes            = self.axis_data
+                    joy.buttons         = self.button_data
+                    self.publisher.publish(joy)
+                    #logMessage          = joy.axes
+                    
+                if logMessage:
+                    rospy.loginfo(logMessage)
+                    logMessage              = ''
 
             #self.rate.sleep()
             self.clock.tick(30)

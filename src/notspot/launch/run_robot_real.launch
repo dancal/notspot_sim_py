@@ -5,7 +5,7 @@
       <arg name="world_name" value="$(find notspot_gazebo)/launch/world/normal.world"/>
       <arg name="use_sim_time" value="true"/>
     </include>
-    
+
     <!-- Robot -->
     <arg name="robot" default="$(find notspot_description)/urdf/notspot.urdf"/>
     <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg robot)" />
@@ -22,7 +22,7 @@
     <!-- Robot State Publisher -->
     <node pkg="robot_state_publisher" type="robot_state_publisher"  name="robot_state_publisher" respawn="false" output="screen">
       <remap from="/joint_states" to="/notspot_gazebo/joint_states" />
-      <param name="publish_frequency" type="double" value="10" />
+      <param name="publish_frequency" type="double" value="30" />
     </node>
     
     <!-- Robot controller -->

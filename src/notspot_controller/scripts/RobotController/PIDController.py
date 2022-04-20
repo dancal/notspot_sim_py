@@ -40,7 +40,8 @@ class PID_controller(object):
                 self.I_term[i] = self.max_I
 
         # approximate first derivate
-        self.D_term = (error - self.last_error) / step
+        if not np.isfinite(error).all() and not np.isfinite(self.last_error).all():
+            self.D_term = (error - self.last_error) / step
 
         # update last values 
         self.last_time = t_now
