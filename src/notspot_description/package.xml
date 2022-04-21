@@ -1,13 +1,18 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>notspot_description</name>
-  <version>1.0.0</version>
-  <description>The notspot_description package</description>
+  <version>0.1.0</version>
+  <description>CHAMP Description Package</description>
 
-  <maintainer email="lnotspotl@gmail.com">lnotspotl</maintainer>
+  <maintainer email="jimenojmm@gmail.com">Juan Miguel Jimeno</maintainer>
+  <author>Fran Ferri</author>
+  <author>Juan Miguel Jimeno</author>
 
-  <license>MIT</license>
-
+  <license>GPLv3</license>
+  
   <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>urdf</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>rviz</exec_depend>
 
 </package>

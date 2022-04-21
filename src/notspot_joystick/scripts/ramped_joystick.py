@@ -58,14 +58,16 @@ class PS3Controller(object):
         if joystickCount > 0:
             self.controller = pygame.joystick.Joystick(0)
             self.controller.init()
+
+            if not self.hat_data:
+                self.hat_data = {}
+                for i in range(self.controller.get_numhats()):
+                    self.hat_data[i] = (0, 0)
+
+
         else:
             pygame.display.set_caption("SPOTMICRO")
             self.screen      = pygame.display.set_mode((600, 600))
-
-        if not self.hat_data:
-            self.hat_data = {}
-            for i in range(self.controller.get_numhats()):
-                self.hat_data[i] = (0, 0)
 
         self.axis_data          = [0.,0.,1.,0.,0.,1.,0.,0.]
         self.button_data        = [0,0,0,0,0,0,0,0,0,0,0]
@@ -74,10 +76,11 @@ class PS3Controller(object):
 
         while not rospy.is_shutdown():
 
-            evnet_changes   = False
+            evnet_changes       = True
+            self.is_activated   = True
             if joystickCount <= 0:
                 for event in pygame.event.get():
-                    evnet_changes               = True
+
                     if event.type == pygame.KEYDOWN:
                         print(event.key)
                         #self.button_data    = [0,0,1,0,0,0,0,0,0,0,0] 
@@ -93,6 +96,11 @@ class PS3Controller(object):
                     elif event.type == pygame.KEYUP:
                         self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
 
+                    joy                 = Joy()
+                    joy.header.stamp    = rospy.Time.now()
+                    joy.axes            = self.axis_data
+                    joy.buttons         = self.button_data
+                    self.publisher.publish(joy)
             else:
 
                 for event in pygame.event.get():

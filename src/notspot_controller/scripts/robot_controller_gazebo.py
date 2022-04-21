@@ -20,22 +20,39 @@ legs = [0.0, 0.04, 0.100, 0.094333]
 notspot_robot = RobotController.Robot(body, legs, USE_IMU)
 inverseKinematics = robot_IK.InverseKinematics(body, legs)
 
-command_topics = ["/notspot_controller/FR1_joint/command",
-                  "/notspot_controller/FR2_joint/command",
-                  "/notspot_controller/FR3_joint/command",
-                  "/notspot_controller/FL1_joint/command",
-                  "/notspot_controller/FL2_joint/command",
-                  "/notspot_controller/FL3_joint/command",
-                  "/notspot_controller/RR1_joint/command",
-                  "/notspot_controller/RR2_joint/command",
-                  "/notspot_controller/RR3_joint/command",
-                  "/notspot_controller/RL1_joint/command",
-                  "/notspot_controller/RL2_joint/command",
-                  "/notspot_controller/RL3_joint/command"]
+#command_topics = ["/notspot_controller/FR1_joint/command",
+#                  "/notspot_controller/FR2_joint/command",
+#                  "/notspot_controller/FR3_joint/command",
+#                  "/notspot_controller/FL1_joint/command",
+#                  "/notspot_controller/FL2_joint/command",
+#                  "/notspot_controller/FL3_joint/command",
+#                  "/notspot_controller/RR1_joint/command",
+#                  "/notspot_controller/RR2_joint/command",
+#                  "/notspot_controller/RR3_joint/command",
+#                  "/notspot_controller/RL1_joint/command",
+#                  "/notspot_controller/RL2_joint/command",
+#                  "/notspot_controller/RL3_joint/command"]
+
+command_topics = [
+            "/notspot_controller/joint_state_controller",
+            "/notspot_controller/front_left_shoulder/command",
+            "/notspot_controller/front_left_foot/command",
+            "/notspot_controller/front_left_leg/command",
+            "/notspot_controller/front_right_shoulder/command",
+            "/notspot_controller/front_right_foot/command",
+            "/notspot_controller/front_right_leg/command",
+            "/notspot_controller/rear_left_shoulder/command",
+            "/notspot_controller/rear_left_foot/command",
+            "/notspot_controller/rear_left_leg/command",
+            "/notspot_controller/rear_right_shoulder/command",
+            "/notspot_controller/rear_right_foot/command",
+            "/notspot_controller/rear_right_leg/command"
+]
 
 publishers = []
 for i in range(len(command_topics)):
     publishers.append(rospy.Publisher(command_topics[i], Float64, queue_size = 0))
+    print(command_topics[i])
 
 if USE_IMU:
     rospy.Subscriber("notspot_imu/base_link_orientation",Imu,notspot_robot.imu_orientation)

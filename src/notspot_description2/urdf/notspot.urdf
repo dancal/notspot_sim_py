@@ -32,7 +32,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://notspot_description/meshes/body_obj.obj" />
+          filename="package://notspot_description2/meshes/body_obj.obj" />
       </geometry>
     </visual>
     <collision>
@@ -67,7 +67,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://notspot_description/meshes/FR1_obj.obj" />
+          filename="package://notspot_description2/meshes/FR1_obj.obj" />
       </geometry>
     </visual>
   </link>
@@ -94,7 +94,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://notspot_description/meshes/R2_obj.obj" />
+          filename="package://notspot_description2/meshes/R2_obj.obj" />
       </geometry>
     </visual>
     <collision>
@@ -129,7 +129,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://notspot_description/meshes/R3_obj.obj" />
+          filename="package://notspot_description2/meshes/R3_obj.obj" />
       </geometry>
     </visual>
     <collision>
@@ -190,7 +190,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://notspot_description/meshes/FL1_obj.obj" />
+          filename="package://notspot_description2/meshes/FL1_obj.obj" />
       </geometry>
     </visual>
   </link>
@@ -217,7 +217,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://notspot_description/meshes/L2_obj.obj" />
+          filename="package://notspot_description2/meshes/L2_obj.obj" />
       </geometry>
     </visual>
     <collision>
@@ -252,7 +252,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://notspot_description/meshes/L3_obj.obj" />
+          filename="package://notspot_description2/meshes/L3_obj.obj" />
       </geometry>
     </visual>
     <collision>
@@ -313,7 +313,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://notspot_description/meshes/RR1_obj.obj" />
+          filename="package://notspot_description2/meshes/RR1_obj.obj" />
       </geometry>
     </visual>
   </link>
@@ -340,7 +340,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://notspot_description/meshes/R2_obj.obj" />
+          filename="package://notspot_description2/meshes/R2_obj.obj" />
       </geometry>
     </visual>
     <collision>
@@ -375,7 +375,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://notspot_description/meshes/R3_obj.obj" />
+          filename="package://notspot_description2/meshes/R3_obj.obj" />
       </geometry>
     </visual>
     <collision>
@@ -436,7 +436,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://notspot_description/meshes/RL1_obj.obj" />
+          filename="package://notspot_description2/meshes/RL1_obj.obj" />
       </geometry>
     </visual>
   </link>
@@ -463,7 +463,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://notspot_description/meshes/L2_obj.obj" />
+          filename="package://notspot_description2/meshes/L2_obj.obj" />
       </geometry>
     </visual>
     <collision>
@@ -498,7 +498,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://notspot_description/meshes/L3_obj.obj" />
+          filename="package://notspot_description2/meshes/L3_obj.obj" />
       </geometry>
     </visual>
     <collision>
