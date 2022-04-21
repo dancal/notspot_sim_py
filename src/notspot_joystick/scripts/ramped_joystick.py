@@ -76,9 +76,10 @@ class PS3Controller(object):
 
         while not rospy.is_shutdown():
 
-            evnet_changes       = True
-            self.is_activated   = True
+            evnet_changes           = False
             if joystickCount <= 0:
+                evnet_changes       = True
+                self.is_activated   = True
                 for event in pygame.event.get():
 
                     if event.type == pygame.KEYDOWN:
@@ -166,14 +167,20 @@ class PS3Controller(object):
                     rospy.loginfo('Press START/OPTIONS to enable the servos')
                     continue
 
-                if (evnet_changes == True) and (self.is_activated == True):
-                    joy                 = Joy()
-                    joy.header.stamp    = rospy.Time.now()
-                    joy.axes            = self.axis_data
-                    joy.buttons         = self.button_data
-                    self.publisher.publish(joy)
-                    #logMessage          = joy.axes
-                    
+                #if (evnet_changes == True) and (self.is_activated == True):
+                #    joy                 = Joy()
+                #    joy.header.stamp    = rospy.Time.now()
+                #    joy.axes            = self.axis_data
+                #    joy.buttons         = self.button_data
+                #    self.publisher.publish(joy)
+                #    logMessage          = joy.axes
+                joy                 = Joy()
+                joy.header.stamp    = rospy.Time.now()
+                joy.axes            = self.axis_data
+                joy.buttons         = self.button_data
+                self.publisher.publish(joy)
+                logMessage          = joy.axes
+
                 if logMessage:
                     rospy.loginfo(logMessage)
                     logMessage              = ''

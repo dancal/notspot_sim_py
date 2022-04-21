@@ -9,7 +9,7 @@ from InverseKinematics import robot_IK
 from std_msgs.msg import Float64
 
 USE_IMU = True
-RATE = 60
+RATE = 10
 
 rospy.init_node("Robot_Controller")
 
@@ -51,7 +51,6 @@ command_topics = ["/notspot_controller/front_right_shoulder/command",
 publishers = []
 for i in range(len(command_topics)):
     publishers.append(rospy.Publisher(command_topics[i], Float64, queue_size = 0))
-    print(command_topics[i])
 
 if USE_IMU:
     rospy.Subscriber("notspot_imu/base_link_orientation",Imu,notspot_robot.imu_orientation)
@@ -78,8 +77,7 @@ while not rospy.is_shutdown():
     yaw = notspot_robot.state.body_local_orientation[2]
 
     try:
-        joint_angles = inverseKinematics.inverse_kinematics(leg_positions,
-                               dx, dy, dz, roll, pitch, yaw)
+        joint_angles = inverseKinematics.inverse_kinematics(leg_positions, dx, dy, dz, roll, pitch, yaw)
 
         for i in range(len(joint_angles)):
             publishers[i].publish(joint_angles[i])
