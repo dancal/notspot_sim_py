@@ -4,6 +4,25 @@
 <!-- |    EDITING THIS FILE BY HAND IS NOT RECOMMENDED                                 | -->
 <!-- =================================================================================== -->
 <robot name="notspot">
+
+  <!-- ros_control plugin -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>notspot_controller</robotNamespace>
+    </plugin>
+  </gazebo>
+  <!-- Joint state publisher plugin -->
+  <gazebo>
+    <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
+        <robotNamespace>notspot_gazebo</robotNamespace>
+        <jointName>front_right_shoulder, front_right_foot, front_right_leg,
+                   front_left_shoulder, front_left_foot, front_left_leg,
+                   rear_right_shoulder, rear_right_foot, rear_right_leg,
+                   rear_left_shoulder, rear_left_foot, rear_left_leg</jointName>
+        <updateRate>100</updateRate>
+    </plugin>
+  </gazebo>
+
   <material name="yellow">
     <color rgba="0.92 0.83 0.0 1"/>
   </material>
@@ -190,10 +209,10 @@
   <transmission name="front_left_shoulder_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="front_left_shoulder">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="front_left_shoulder_actuator">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -208,10 +227,10 @@
   <transmission name="front_left_leg_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="front_left_leg">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="front_left_leg_actuator">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -231,10 +250,10 @@
   <transmission name="front_left_foot_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="front_left_foot">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="front_left_foot_actuator">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -343,10 +362,10 @@
   <transmission name="front_right_shoulder_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="front_right_shoulder">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="front_right_shoulder_actuator">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -361,10 +380,10 @@
   <transmission name="front_right_leg_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="front_right_leg">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="front_right_leg_actuator">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -384,10 +403,10 @@
   <transmission name="front_right_foot_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="front_right_foot">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="front_right_foot_actuator">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -496,10 +515,10 @@
   <transmission name="rear_left_shoulder_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="rear_left_shoulder">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="rear_left_shoulder_actuator">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -514,10 +533,10 @@
   <transmission name="rear_left_leg_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="rear_left_leg">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="rear_left_leg_actuator">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -537,10 +556,10 @@
   <transmission name="rear_left_foot_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="rear_left_foot">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="rear_left_foot_actuator">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -649,10 +668,10 @@
   <transmission name="rear_right_shoulder_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="rear_right_shoulder">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="rear_right_shoulder_actuator">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -667,10 +686,10 @@
   <transmission name="rear_right_leg_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="rear_right_leg">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="rear_right_leg_actuator">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -690,10 +709,10 @@
   <transmission name="rear_right_foot_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="rear_right_foot">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="rear_right_foot_actuator">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>

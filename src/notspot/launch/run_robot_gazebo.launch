@@ -1,37 +1,28 @@
 <launch>
 
-  <!-- Gazebo Simulation -->
-  <!-- Empty World -->
-  <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find notspot_gazebo)/launch/world/normal.world"/>
-    <arg name="use_sim_time" value="true"/>
-  </include>
+    <!-- Gazebo Simulation -->
+    <!-- Empty World -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <arg name="world_name" value="$(find notspot_gazebo)/launch/world/normal.world"/>
+      <arg name="use_sim_time" value="true"/>
+    </include>
 
-  <!-- Robot -->
-  <arg name="robot" default="$(find notspot_description)/urdf/spotmicroai.urdf"/>
-  <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg robot)" />
-  <node name="spawn_model" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -z 0.5 -model notspot_gazebo"/>
+    <!-- Robot -->
+    <arg name="robot" default="$(find notspot_description)/urdf/spotmicroai.urdf"/>
+    <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg robot)" />
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -z 0.5 -model notspot_gazebo"/>
 
-  <!-- Controllers -->         
-  <rosparam file="$(find notspot_gazebo)/config/controllers2.yaml" command="load"/>
-  <node name="controller_spawner" pkg="controller_manager" type="spawner" ns="notspot_controller" args="joint_state
-                                                                                                  front_left_shoulder
-                                                                                                  front_left_foot
-                                                                                                  front_left_leg
-                                                                                                  front_right_shoulder
-                                                                                                  front_right_foot
-                                                                                                  front_right_leg
-                                                                                                  rear_left_shoulder
-                                                                                                  rear_left_foot
-                                                                                                  rear_left_leg
-                                                                                                  rear_right_shoulder
-                                                                                                  rear_right_foot
-                                                                                                  rear_right_leg
-                                                                                                  "/> 
+    <!-- Controllers -->
+    <rosparam file="$(find notspot_gazebo)/config/controllers2.yaml" command="load"/>
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" output="screen" ns="notspot_controller"
+          args="front_right_shoulder front_right_foot front_right_leg
+                front_left_shoulder front_left_foot front_left_leg
+                rear_right_shoulder rear_right_foot rear_right_leg
+                rear_left_shoulder rear_left_foot rear_left_leg"/>
 
     <!-- Robot State Publisher -->
     <node pkg="robot_state_publisher" type="robot_state_publisher"  name="robot_state_publisher" respawn="false" output="screen">
-      <remap from="/joint_states" to="/notspot_gazebo/joint_states" />
+      <remap from="/joint_states" to="/notspot_controller/joint_states" />
       <param name="publish_frequency" type="double" value="10" />
     </node>
 
@@ -40,5 +31,5 @@
   
     <!-- Joystick -->
     <include file="$(find notspot_joystick)/launch/ramped_joystick.launch" />
-
+                                                                                   
 </launch>

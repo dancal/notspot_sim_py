@@ -32,22 +32,21 @@ inverseKinematics = robot_IK.InverseKinematics(body, legs)
 #                  "/notspot_controller/RL1_joint/command",
 #                  "/notspot_controller/RL2_joint/command",
 #                  "/notspot_controller/RL3_joint/command"]
+  
 
-command_topics = [
-            "/notspot_controller/joint_state_controller",
-            "/notspot_controller/front_left_shoulder/command",
-            "/notspot_controller/front_left_foot/command",
-            "/notspot_controller/front_left_leg/command",
-            "/notspot_controller/front_right_shoulder/command",
-            "/notspot_controller/front_right_foot/command",
-            "/notspot_controller/front_right_leg/command",
-            "/notspot_controller/rear_left_shoulder/command",
-            "/notspot_controller/rear_left_foot/command",
-            "/notspot_controller/rear_left_leg/command",
-            "/notspot_controller/rear_right_shoulder/command",
-            "/notspot_controller/rear_right_foot/command",
-            "/notspot_controller/rear_right_leg/command"
-]
+command_topics = ["/notspot_controller/front_right_shoulder/command",
+                  "/notspot_controller/front_right_foot/command",
+                  "/notspot_controller/front_right_leg/command",
+                  "/notspot_controller/front_left_shoulder/command",
+                  "/notspot_controller/front_left_foot/command",
+                  "/notspot_controller/front_left_leg/command",
+                  "/notspot_controller/rear_right_shoulder/command",
+                  "/notspot_controller/rear_right_foot/command",
+                  "/notspot_controller/rear_right_leg/command",
+                  "/notspot_controller/rear_left_shoulder/command",
+                  "/notspot_controller/rear_left_foot/command",
+                  "/notspot_controller/rear_left_leg/command"]
+
 
 publishers = []
 for i in range(len(command_topics)):
