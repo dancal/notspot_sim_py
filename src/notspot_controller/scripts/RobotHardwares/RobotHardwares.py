@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
 #Author: dancal
 
-# pip3 install adafruit-circuitpython-motor
-
 #from board import SCL, SDA
 #from turtle import pos
-from adafruit_motor import servo
 #from adafruit_pca9685 import PCA9685
-import Adafruit_PCA9685 as PCA9685
 #from adafruit_motor import servoMoter
+
+from adafruit_motor import servo
+import Adafruit_PCA9685 as PCA9685
 from adafruit_servokit import ServoKit
 
 from numpy import array_equal, sin, cos, pi
 import numpy as np
 
+# roslaunch notspot run_robot_gazebo.launch
+# roslaunch notspot run_robot_hardware.launch
+# roslaunch notspot_joystick ramped_joystick.launch
+
+# pip3 install adafruit-circuitpython-motor
 # pip3 install adafruit-circuitpython-servokit
 # pip install turtle==0.0.1
 
