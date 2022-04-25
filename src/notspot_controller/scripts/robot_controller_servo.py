@@ -9,10 +9,9 @@ from RobotController import RobotController
 from InverseKinematics import robot_IK
 from RobotHardwares import RobotHardwares 
 from std_msgs.msg import Float64
-from time import sleep, time
-import pygame
-from numpy import array_equal, sin, cos, pi
+#from time import sleep, time
 import numpy as np
+import pygame
 
 USE_IMU = True
 RATE = 60
@@ -58,36 +57,32 @@ del USE_IMU
 
 #deg2rad         = pi/180
 #rad2deg         = 180/pi
-clock           = pygame.time.Clock()
-servo_angles_   = []
+clock           = pygame.time.Clock()    
 while not rospy.is_shutdown():
     leg_positions = notspot_robot.run()
     notspot_robot.change_controller()
 
-    dx = notspot_robot.state.body_local_position[0]
-    dy = notspot_robot.state.body_local_position[1]
-    dz = notspot_robot.state.body_local_position[2]
+    dx      = notspot_robot.state.body_local_position[0]
+    dy      = notspot_robot.state.body_local_position[1]
+    dz      = notspot_robot.state.body_local_position[2]
     
-    roll = notspot_robot.state.body_local_orientation[0]
-    pitch = notspot_robot.state.body_local_orientation[1]
-    yaw = notspot_robot.state.body_local_orientation[2]
+    roll    = notspot_robot.state.body_local_orientation[0]
+    pitch   = notspot_robot.state.body_local_orientation[1]
+    yaw     = notspot_robot.state.body_local_orientation[2]
     try:
         # self.servo_rear_shoulder_left = servo.Servo(self.pca9685_1.channels[self.servo_rear_shoulder_left_channel])
         # FR, FL, RR, RL
-        joint_angles = inverseKinematics.inverse_kinematics(leg_positions, dx, dy, dz, roll, pitch, yaw)
-
-        servo_angles    = []
+        joint_angles    = inverseKinematics.inverse_kinematics(leg_positions, dx, dy, dz, roll, pitch, yaw)
+        servoAngle      = []
+        jointAngle      = []
         for i in range(len(joint_angles)):
-            servo_angles.append( int(np.rad2deg(joint_angles[i])) )
+            publishers[i].publish(joint_angles[i])
+            jointAngle.append( round(joint_angles[i], 3) )
+            angleVal    = round(np.rad2deg(joint_angles[i]) / 5) * 5
+            servoAngle.append( int(angleVal) )
 
-        bEqual          = array_equal(servo_angles_, servo_angles)
-        if not bEqual:
-            servoControllers.move(servo_angles)
+        servoControllers.move(jointAngle, servoAngle)
 
-            for i in range(len(joint_angles)):
-                publishers[i].publish(joint_angles[i])
-            
-        servo_angles_    = servo_angles
     except:
         pass
 

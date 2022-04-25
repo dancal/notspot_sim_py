@@ -5,23 +5,43 @@
 <!-- =================================================================================== -->
 <robot name="notspot" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <!-- Maximum torque -->
-  <xacro:property name="effort_limit" value="1.4" />
-
   <!-- ros_control plugin -->
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
       <robotNamespace>notspot_controller</robotNamespace>
     </plugin>
   </gazebo>
+
+  <!-- IMU sensor -->
+  <gazebo reference="base_link">
+    <gravity>true</gravity>
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <visualize>true</visualize>
+      <topic>__default_topic__</topic>
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>notspot_imu/base_link_orientation</topicName>
+        <bodyName>imu_link</bodyName>
+        <updateRateHZ>15.0</updateRateHZ>
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>base_link</frameName>
+        <initialOrientationAsReference>false</initialOrientationAsReference>
+      </plugin>
+      <pose>0 0 0 0 0 0</pose>
+    </sensor>
+  </gazebo>
+
   <!-- Joint state publisher plugin -->
   <gazebo>
     <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
         <robotNamespace>notspot_gazebo</robotNamespace>
-        <jointName>front_right_shoulder, front_right_foot, front_right_leg,
-                   front_left_shoulder, front_left_foot, front_left_leg,
-                   rear_right_shoulder, rear_right_foot, rear_right_leg,
-                   rear_left_shoulder, rear_left_foot, rear_left_leg</jointName>
+        <jointName>front_right_shoulder, front_right_leg,front_right_foot, 
+                   front_left_shoulder, front_left_leg, front_left_foot, 
+                   rear_right_shoulder, rear_right_leg, rear_right_foot, 
+                   rear_left_shoulder, rear_left_leg, rear_left_foot</jointName>
         <updateRate>10</updateRate>
     </plugin>
   </gazebo>
@@ -40,7 +60,7 @@
   <link name="base_inertia">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/mainbody.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/mainbody.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="black"/>
       <origin rpy="0 0 3.1416" xyz="0.0425 0.055 -0.02"/>
@@ -63,7 +83,7 @@
   <link name="rear_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/backpart.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/backpart.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416" xyz="0.042 0.055 -0.0195"/>
       <material name="yellow"/>
@@ -89,7 +109,7 @@
   <link name="front_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/frontpart.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/frontpart.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416" xyz="0.042 0.055 -0.0205"/>
       <material name="yellow"/>
@@ -115,7 +135,7 @@
   <link name="front_left_shoulder_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/lshoulder.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/lshoulder.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416" xyz="0.135 0.0163 -0.0195"/>
       <material name="black"/>
@@ -134,7 +154,7 @@
   <link name="front_left_leg_link_cover">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/larm_cover.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/larm_cover.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416" xyz="0.134 -0.04 -0.0095"/>
       <material name="yellow"/>
@@ -143,7 +163,7 @@
   <link name="front_left_leg_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/larm.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/larm.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416" xyz="0.134 -0.04 -0.0095"/>
       <material name="black"/>
@@ -165,7 +185,7 @@
   <link name="front_left_foot_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/lfoot.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/lfoot.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416 " xyz="0.1195 -0.04 0.099"/>
       <material name="black"/>
@@ -184,7 +204,7 @@
   <link name="front_left_toe_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/foot.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/foot.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0.40010 0" xyz="0 -0.01 0.015"/>
       <material name="grey"/>
@@ -206,7 +226,7 @@
     <child link="front_left_shoulder_link"/>
     <axis xyz="1 0 0"/>
     <origin rpy="0 0 0" xyz="0.093 0.0395 0"/>
-    <limit effort="1000.0" lower="-0.548" upper="0.548" velocity="0.7"/>
+    <limit effort="1000.0" lower="-3" upper="3" velocity="3"/>
     <dynamics damping="0.0" friction="0.5"/>
   </joint>
   <transmission name="front_left_shoulder_trans">
@@ -216,7 +236,7 @@
     </joint>
     <actuator name="front_left_shoulder_actuator">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>5</mechanicalReduction>
     </actuator>
   </transmission>
   <joint name="front_left_leg" type="revolute">
@@ -224,7 +244,7 @@
     <child link="front_left_leg_link"/>
     <axis xyz="0 1 0"/>
     <origin rpy="0 0 0" xyz="0 0.055 0"/>
-    <limit effort="1000.0" lower="-2.666" upper="1.548" velocity="0.5"/>
+    <limit effort="1000.0" lower="-3" upper="3" velocity="3"/>
     <dynamics damping="0.0" friction="0.0"/>
   </joint>
   <transmission name="front_left_leg_trans">
@@ -234,7 +254,7 @@
     </joint>
     <actuator name="front_left_leg_actuator">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>5</mechanicalReduction>
     </actuator>
   </transmission>
   <joint name="front_left_leg_cover_joint" type="fixed">
@@ -247,7 +267,7 @@
     <child link="front_left_foot_link"/>
     <axis xyz="0 1 0"/>
     <origin rpy="0 0 0" xyz="0.014 0 -0.109"/>
-    <limit effort="1000.0" lower="-2.59" upper="0.1" velocity="0.5"/>
+    <limit effort="1000.0" lower="-3" upper="3" velocity="3"/>
     <dynamics damping="0.0" friction="0.5"/>
   </joint>
   <transmission name="front_left_foot_trans">
@@ -257,7 +277,7 @@
     </joint>
     <actuator name="front_left_foot_actuator">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>5</mechanicalReduction>
     </actuator>
   </transmission>
   <joint name="front_left_toe" type="fixed">
@@ -268,7 +288,7 @@
   <link name="front_right_shoulder_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/rshoulder.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/rshoulder.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416" xyz="0.135 0.0938 -0.0205"/>
       <material name="black"/>
@@ -287,7 +307,7 @@
   <link name="front_right_leg_link_cover">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/rarm_cover.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/rarm_cover.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416" xyz="0.134 0.149 -0.0095"/>
       <material name="yellow"/>
@@ -296,7 +316,7 @@
   <link name="front_right_leg_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/rarm.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/rarm.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416" xyz="0.134 0.149 -0.0095"/>
       <material name="black"/>
@@ -318,7 +338,7 @@
   <link name="front_right_foot_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/rfoot.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/rfoot.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416" xyz="0.1195 0.149 0.099"/>
       <material name="black"/>
@@ -337,7 +357,7 @@
   <link name="front_right_toe_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/foot.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/foot.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0.40010 0" xyz="0 -0.01 0.015"/>
       <material name="grey"/>
@@ -359,7 +379,7 @@
     <child link="front_right_shoulder_link"/>
     <axis xyz="1 0 0"/>
     <origin rpy="0 0 0" xyz="0.093 -0.0395 0"/>
-    <limit effort="1000.0" lower="-0.548" upper="0.548" velocity="0.7"/>
+    <limit effort="1000.0" lower="-3" upper="3" velocity="3"/>
     <dynamics damping="0.0" friction="0.5"/>
   </joint>
   <transmission name="front_right_shoulder_trans">
@@ -369,7 +389,7 @@
     </joint>
     <actuator name="front_right_shoulder_actuator">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>5</mechanicalReduction>
     </actuator>
   </transmission>
   <joint name="front_right_leg" type="revolute">
@@ -377,7 +397,7 @@
     <child link="front_right_leg_link"/>
     <axis xyz="0 1 0"/>
     <origin rpy="0 0 0" xyz="0 -0.055 0"/>
-    <limit effort="1000.0" lower="-2.666" upper="1.548" velocity="0.5"/>
+    <limit effort="1000.0" lower="-3" upper="3" velocity="3"/>
     <dynamics damping="0.0" friction="0.0"/>
   </joint>
   <transmission name="front_right_leg_trans">
@@ -387,7 +407,7 @@
     </joint>
     <actuator name="front_right_leg_actuator">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>5</mechanicalReduction>
     </actuator>
   </transmission>
   <joint name="front_right_leg_cover_joint" type="fixed">
@@ -400,7 +420,7 @@
     <child link="front_right_foot_link"/>
     <axis xyz="0 1 0"/>
     <origin rpy="0 0 0" xyz="0.014 0 -0.109"/>
-    <limit effort="1000.0" lower="-2.59" upper="0.1" velocity="0.5"/>
+    <limit effort="1000.0" lower="-3" upper="3" velocity="3"/>
     <dynamics damping="0.0" friction="0.5"/>
   </joint>
   <transmission name="front_right_foot_trans">
@@ -410,7 +430,7 @@
     </joint>
     <actuator name="front_right_foot_actuator">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>5</mechanicalReduction>
     </actuator>
   </transmission>
   <joint name="front_right_toe" type="fixed">
@@ -421,7 +441,7 @@
   <link name="rear_left_shoulder_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/lshoulder.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/lshoulder.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416" xyz="0.135 0.0163 -0.0195"/>
       <material name="black"/>
@@ -440,7 +460,7 @@
   <link name="rear_left_leg_link_cover">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/larm_cover.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/larm_cover.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416" xyz="0.134 -0.04 -0.0095"/>
       <material name="yellow"/>
@@ -449,7 +469,7 @@
   <link name="rear_left_leg_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/larm.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/larm.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416" xyz="0.134 -0.04 -0.0095"/>
       <material name="black"/>
@@ -471,7 +491,7 @@
   <link name="rear_left_foot_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/lfoot.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/lfoot.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416 " xyz="0.1195 -0.04 0.099"/>
       <material name="black"/>
@@ -490,7 +510,7 @@
   <link name="rear_left_toe_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/foot.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/foot.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0.40010 0" xyz="0 -0.01 0.015"/>
       <material name="grey"/>
@@ -512,7 +532,7 @@
     <child link="rear_left_shoulder_link"/>
     <axis xyz="1 0 0"/>
     <origin rpy="0 0 0" xyz="-0.093 0.0395 0"/>
-    <limit effort="1000.0" lower="-0.548" upper="0.548" velocity="0.7"/>
+    <limit effort="1000.0" lower="-3" upper="3" velocity="3"/>
     <dynamics damping="0.0" friction="0.5"/>
   </joint>
   <transmission name="rear_left_shoulder_trans">
@@ -522,7 +542,7 @@
     </joint>
     <actuator name="rear_left_shoulder_actuator">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>5</mechanicalReduction>
     </actuator>
   </transmission>
   <joint name="rear_left_leg" type="revolute">
@@ -530,7 +550,7 @@
     <child link="rear_left_leg_link"/>
     <axis xyz="0 1 0"/>
     <origin rpy="0 0 0" xyz="0 0.055 0"/>
-    <limit effort="1000.0" lower="-2.666" upper="1.548" velocity="0.5"/>
+    <limit effort="1000.0" lower="-3" upper="3" velocity="3"/>
     <dynamics damping="0.0" friction="0.0"/>
   </joint>
   <transmission name="rear_left_leg_trans">
@@ -540,7 +560,7 @@
     </joint>
     <actuator name="rear_left_leg_actuator">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>5</mechanicalReduction>
     </actuator>
   </transmission>
   <joint name="rear_left_leg_cover_joint" type="fixed">
@@ -553,7 +573,7 @@
     <child link="rear_left_foot_link"/>
     <axis xyz="0 1 0"/>
     <origin rpy="0 0 0" xyz="0.014 0 -0.109"/>
-    <limit effort="1000.0" lower="-2.59" upper="0.1" velocity="0.5"/>
+    <limit effort="1000.0" lower="-3" upper="3" velocity="3"/>
     <dynamics damping="0.0" friction="0.5"/>
   </joint>
   <transmission name="rear_left_foot_trans">
@@ -563,7 +583,7 @@
     </joint>
     <actuator name="rear_left_foot_actuator">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>5</mechanicalReduction>
     </actuator>
   </transmission>
   <joint name="rear_left_toe" type="fixed">
@@ -574,7 +594,7 @@
   <link name="rear_right_shoulder_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/rshoulder.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/rshoulder.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416" xyz="0.135 0.0938 -0.0205"/>
       <material name="black"/>
@@ -593,7 +613,7 @@
   <link name="rear_right_leg_link_cover">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/rarm_cover.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/rarm_cover.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416" xyz="0.134 0.149 -0.0095"/>
       <material name="yellow"/>
@@ -602,7 +622,7 @@
   <link name="rear_right_leg_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/rarm.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/rarm.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416" xyz="0.134 0.149 -0.0095"/>
       <material name="black"/>
@@ -624,7 +644,7 @@
   <link name="rear_right_foot_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/rfoot.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/rfoot.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 3.1416" xyz="0.1195 0.149 0.099"/>
       <material name="black"/>
@@ -643,7 +663,7 @@
   <link name="rear_right_toe_link">
     <visual>
       <geometry>
-        <mesh filename="package://notspot_description/meshes/stl/foot.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://notspot_description/meshes/stl/spot/foot.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0.40010 0" xyz="0 -0.01 0.015"/>
       <material name="grey"/>
@@ -665,7 +685,7 @@
     <child link="rear_right_shoulder_link"/>
     <axis xyz="1 0 0"/>
     <origin rpy="0 0 0" xyz="-0.093 -0.0395 0"/>
-    <limit effort="1000.0" lower="-0.548" upper="0.548" velocity="0.7"/>
+    <limit effort="1000.0" lower="-3" upper="3" velocity="3"/>
     <dynamics damping="0.0" friction="0.5"/>
   </joint>
   <transmission name="rear_right_shoulder_trans">
@@ -675,7 +695,7 @@
     </joint>
     <actuator name="rear_right_shoulder_actuator">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>5</mechanicalReduction>
     </actuator>
   </transmission>
   <joint name="rear_right_leg" type="revolute">
@@ -683,7 +703,7 @@
     <child link="rear_right_leg_link"/>
     <axis xyz="0 1 0"/>
     <origin rpy="0 0 0" xyz="0 -0.055 0"/>
-    <limit effort="1000.0" lower="-2.666" upper="1.548" velocity="0.5"/>
+    <limit effort="1000.0" lower="-3" upper="3" velocity="3"/>
     <dynamics damping="0.0" friction="0.0"/>
   </joint>
   <transmission name="rear_right_leg_trans">
@@ -693,7 +713,7 @@
     </joint>
     <actuator name="rear_right_leg_actuator">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>5</mechanicalReduction>
     </actuator>
   </transmission>
   <joint name="rear_right_leg_cover_joint" type="fixed">
@@ -706,7 +726,7 @@
     <child link="rear_right_foot_link"/>
     <axis xyz="0 1 0"/>
     <origin rpy="0 0 0" xyz="0.014 0 -0.109"/>
-    <limit effort="1000.0" lower="-2.59" upper="0.1" velocity="0.5"/>
+    <limit effort="1000.0" lower="-3" upper="3" velocity="3"/>
     <dynamics damping="0.0" friction="0.5"/>
   </joint>
   <transmission name="rear_right_foot_trans">
@@ -716,7 +736,7 @@
     </joint>
     <actuator name="rear_right_foot_actuator">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>5</mechanicalReduction>
     </actuator>
   </transmission>
   <joint name="rear_right_toe" type="fixed">

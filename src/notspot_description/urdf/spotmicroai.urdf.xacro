@@ -34,13 +34,13 @@
          <visual>
             <xacro:if value="${left}">
                <geometry>
-                  <mesh filename="package://notspot_description/meshes/stl/lshoulder.stl" scale="0.001 0.001 0.001" />
+                  <mesh filename="package://notspot_description/meshes/stl/spot/lshoulder.stl" scale="0.001 0.001 0.001" />
                </geometry>
                <origin rpy="0 0 3.1416" xyz="0.135 0.0163 -0.0195" />
             </xacro:if>
             <xacro:unless value="${left}">
                <geometry>
-                  <mesh filename="package://notspot_description/meshes/stl/rshoulder.stl" scale="0.001 0.001 0.001" />
+                  <mesh filename="package://notspot_description/meshes/stl/spot/rshoulder.stl" scale="0.001 0.001 0.001" />
                </geometry>
                <origin rpy="0 0 3.1416" xyz="0.135 0.0938 -0.0205" />
             </xacro:unless>
@@ -83,13 +83,13 @@
          <visual>
             <xacro:if value="${left}">
                <geometry>
-                  <mesh filename="package://notspot_description/meshes/stl/larm_cover.stl" scale="0.001 0.001 0.001" />
+                  <mesh filename="package://notspot_description/meshes/stl/spot/larm_cover.stl" scale="0.001 0.001 0.001" />
                </geometry>
                <origin rpy="0 0 3.1416" xyz="0.134 -0.04 -0.0095" />
             </xacro:if>
             <xacro:unless value="${left}">
                <geometry>
-                  <mesh filename="package://notspot_description/meshes/stl/rarm_cover.stl" scale="0.001 0.001 0.001" />
+                  <mesh filename="package://notspot_description/meshes/stl/spot/rarm_cover.stl" scale="0.001 0.001 0.001" />
                </geometry>
                <origin rpy="0 0 3.1416" xyz="0.134 0.149 -0.0095" />
             </xacro:unless>
@@ -100,13 +100,13 @@
          <visual>
             <xacro:if value="${left}">
                <geometry>
-                  <mesh filename="package://notspot_description/meshes/stl/larm.stl" scale="0.001 0.001 0.001" />
+                  <mesh filename="package://notspot_description/meshes/stl/spot/larm.stl" scale="0.001 0.001 0.001" />
                </geometry>
                <origin rpy="0 0 3.1416" xyz="0.134 -0.04 -0.0095" />
             </xacro:if>
             <xacro:unless value="${left}">
                <geometry>
-                  <mesh filename="package://notspot_description/meshes/stl/rarm.stl" scale="0.001 0.001 0.001" />
+                  <mesh filename="package://notspot_description/meshes/stl/spot/rarm.stl" scale="0.001 0.001 0.001" />
                </geometry>
                <origin rpy="0 0 3.1416" xyz="0.134 0.149 -0.0095" />
             </xacro:unless>
@@ -157,13 +157,13 @@
          <visual>
             <xacro:if value="${left}">
                <geometry>
-                  <mesh filename="package://notspot_description/meshes/stl/lfoot.stl" scale="0.001 0.001 0.001" />
+                  <mesh filename="package://notspot_description/meshes/stl/spot/lfoot.stl" scale="0.001 0.001 0.001" />
                </geometry>
                <origin rpy="0 0 3.1416 " xyz="0.1195 -0.04 0.099" />
             </xacro:if>
             <xacro:unless value="${left}">
                <geometry>
-                  <mesh filename="package://notspot_description/meshes/stl/rfoot.stl" scale="0.001 0.001 0.001" />
+                  <mesh filename="package://notspot_description/meshes/stl/spot/rfoot.stl" scale="0.001 0.001 0.001" />
                </geometry>
                <origin rpy="0 0 3.1416" xyz="0.1195 0.149 0.099" />
             </xacro:unless>
@@ -205,7 +205,7 @@
       <link name="${name}">
          <visual>
             <geometry>
-               <mesh filename="package://notspot_description/meshes/stl/foot.stl" scale="0.001 0.001 0.001" />
+               <mesh filename="package://notspot_description/meshes/stl/spot/foot.stl" scale="0.001 0.001 0.001" />
             </geometry>
             <origin rpy="0 0.40010 0" xyz="0 -0.01 0.015" />
             <material name="grey" />
@@ -245,7 +245,7 @@
    <link name="base_inertia">
       <visual>
          <geometry>
-            <mesh filename="package://notspot_description/meshes/stl/mainbody.stl" scale="0.001 0.001 0.001" />
+            <mesh filename="package://notspot_description/meshes/stl/spot/mainbody.stl" scale="0.001 0.001 0.001" />
          </geometry>
          <material name="black" />
          <origin rpy="0 0 3.1416" xyz="0.0425 0.055 -0.02" />
@@ -268,7 +268,7 @@
    <link name="rear_link">
       <visual>
          <geometry>
-            <mesh filename="package://notspot_description/meshes/stl/backpart.stl" scale="0.001 0.001 0.001" />
+            <mesh filename="package://notspot_description/meshes/stl/spot/backpart.stl" scale="0.001 0.001 0.001" />
          </geometry>
          <origin rpy="0 0 3.1416" xyz="0.042 0.055 -0.0195" />
          <material name="yellow" />
@@ -294,7 +294,7 @@
    <link name="front_link">
       <visual>
          <geometry>
-            <mesh filename="package://notspot_description/meshes/stl/frontpart.stl" scale="0.001 0.001 0.001" />
+            <mesh filename="package://notspot_description/meshes/stl/spot/frontpart.stl" scale="0.001 0.001 0.001" />
          </geometry>
          <origin rpy="0 0 3.1416" xyz="0.042 0.055 -0.0205" />
          <material name="yellow" />

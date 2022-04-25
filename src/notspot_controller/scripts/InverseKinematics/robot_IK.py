@@ -56,8 +56,7 @@ class InverseKinematics(object):
         """
         Compute the inverse kinematics for all the legs.
         """
-        positions = self.get_local_positions(leg_positions,dx,dy,dz,
-                                                            roll,pitch,yaw)
+        positions = self.get_local_positions(leg_positions,dx,dy,dz, roll,pitch,yaw)
         angles = []
 
         for i in range(4):
