@@ -6,13 +6,13 @@
 #from adafruit_pca9685 import PCA9685
 #from adafruit_motor import servoMoter
 
-from adafruit_motor import servo
-import Adafruit_PCA9685 as PCA9685
-from adafruit_servokit import ServoKit
+#from adafruit_motor import servo
+#import Adafruit_PCA9685 as PCA9685
+#from adafruit_servokit import ServoKit
 
 from numpy import array_equal, sin, cos, pi
 import numpy as np
-
+import math
 # roslaunch notspot run_robot_gazebo.launch
 # roslaunch notspot run_robot_hardware.launch
 # roslaunch notspot_joystick ramped_joystick.launch
@@ -21,14 +21,20 @@ import numpy as np
 # pip3 install adafruit-circuitpython-servokit
 # pip install turtle==0.0.1
 
+class ServoItem:
+    pca9685Num  = None
+    pca9685Pin  = 0
+
 # FR, FL, RR, RL
 class ServoController:
     i2c                 = None
     ServoKitF           = None
     ServoKitB           = None
 
-    angles              = []
-    anglesPre           = []
+    servoDefAngle       = None
+
+    servoAngle          = []
+    servoAnglePre       = []
 
     # FR, FL, RR, RL
     servoMoters         = []
@@ -45,11 +51,14 @@ class ServoController:
 
         # self.pca9685_2.channels[0]
 
-        self.ServoKitB          = ServoKit(channels=6, address=0x40)
-        self.ServoKitF          = ServoKit(channels=6, address=0x41)
+        #self.ServoKitB          = ServoKit(channels=6, address=0x40)
+        #self.ServoKitF          = ServoKit(channels=6, address=0x41)
+        self.ServoKitB          = None
+        self.ServoKitF          = None
 
-        self.servoMoters        = []    # 2
-        self.servoMoters.append( self.ServoKitF )
+        #self.servoMoters['FRS'] = ServoItem(self.ServoKitF, 0)
+
+        self.servoMoters.append( self.ServoKitF,  )
         self.servoMoters.append( self.ServoKitF )
         self.servoMoters.append( self.ServoKitF )
         self.servoMoters.append( self.ServoKitF )
@@ -63,66 +72,71 @@ class ServoController:
         self.servoMoters.append( self.ServoKitB )
         self.servoMoters.append( self.ServoKitB )
 
-    def _normalizePos(self, servoAngle):
-        # FR, FL, RR, RL
-        _servoAngle     = []
-        for i in range(len(self.servoMoters)):
-            val = 0
+        self.servoDefAngle  = []
+        self.servoDefAngle.append( 90 )
+        self.servoDefAngle.append( 126 )
+        self.servoDefAngle.append( 169 )
 
-            # SHOULDER
-            if i == 0 or i == 3 or i == 6 or i == 9:
-                val = 90 - servoAngle[i]
+        self.servoDefAngle.append( 90 )
+        self.servoDefAngle.append( 55 )
+        self.servoDefAngle.append( 169 )
 
-            elif i == 1:
-                # FRL
-                val = 125 - (servoAngle[i] * 1)
-            elif i == 2:
-                # FRF
-                val = 170 - (servoAngle[i] * -1) 
+        self.servoDefAngle.append( 91 )
+        self.servoDefAngle.append( 139 )
+        self.servoDefAngle.append( 167 )
 
-            elif i == 4:
-                # FLL
-                val = 55 - (servoAngle[i] * -1)
-            elif i == 5:
-                # FLF
-                val = 10 + (servoAngle[i] * -1) 
+        self.servoDefAngle.append( 90 )
+        self.servoDefAngle.append( 42 )
+        self.servoDefAngle.append( 167 )
 
-            elif i == 7:
-                # RRL
-                val = 140 - (servoAngle[i] * 1)
-            elif i == 8:
-                # RRF
-                val = 165 - (servoAngle[i] * -1) 
+    def _spotStance(self, servoIdx):
+        stance  = 1
 
-            elif i == 10:
-                # RLL
-                val = 40 - (servoAngle[i] * -1)
-            elif i == 11:
-                # RLF
-                val = 15 + (servoAngle[i] * -1) 
+        # Shoulder
+        if (servoIdx % 3) == 2:
+            stance  = -1
 
-            _servoAngle.append(val)
+        if servoIdx == 1 or stance == 2:
+            stance = -1
 
-        return _servoAngle
+        if servoIdx == 7 or stance == 7:
+            stance = -1
 
-    def _moveServo(self, servoAngle):
+        return stance
+
+    def rad2deg(self, rad):
+        deg = abs(rad) * 180.0 / np.pi
+        if deg > 90:
+            deg = 90
+        elif deg < -90:
+            deg = -90
+        return deg
+
+    #def _moveServo(self, servoAngle):   
+    #    for i in range(len(self.servoMoters)):
+    #        servoKit    = self.servoMoters[i]
+    #        servoKit.angle  = servoAngle[i]
+    #    print('servoAngle=', servoAngle)
+
+    def move(self, joint_angles, state):
         
-        for i in range(len(self.servoMoters)):
-            servoKit    = self.servoMoters[i]
-            servoKit.angle  = servoAngle[i]
+        # servoAngle
+        self.servoAngle = []
+        for i in range(len(joint_angles)):
+            stance      = self._spotStance(i)
+            val         = (self.rad2deg(joint_angles[i]) * self._spotStance(i)) + self.servoDefAngle[i]
+            
+            self.servoAngle.append( int( math.floor(val / 2) * 2) )
 
-        print('servoAngle=', servoAngle)
-
-    def move(self, joint_angles, servoAngle):
-        
-        bEqual  = array_equal(servoAngle, self.anglesPre)
+        bEqual  = array_equal(self.servoAngle, self.servoAnglePre)
         if bEqual:
             return
         
         # FR, FL, RR, RL
-        _servoAngle     = self._normalizePos(servoAngle)
-        self._moveServo(_servoAngle)
-        self.anglesPre  = servoAngle
+        #_servoAngle     = self._normalizePos(self.servoAngle)
+        #self._moveServo(_servoAngle)
+        print(self.servoAngle, state.wait_event )
+        self.servoAnglePre  = self.servoAngle
 
 if __name__ == "__main__":
     ps4 = ServoController()

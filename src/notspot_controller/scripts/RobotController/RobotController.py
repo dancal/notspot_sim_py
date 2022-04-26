@@ -64,6 +64,12 @@ class Robot(object):
             self.currentController.pid_controller.reset()
             self.command.rest_event = False
 
+        elif self.command.wait_event:
+            self.state.behavior_state = BehaviorState.REST
+            self.currentController = self.restController
+            self.currentController.pid_controller.reset()
+            self.command.rest_event = False
+
     def joystick_command(self,msg):
         if msg.buttons[0]: # rest
             self.command.trot_event = False
@@ -89,6 +95,10 @@ class Robot(object):
             self.command.stand_event = True
             self.command.rest_event = False
       
+        self.command.wait_event = False
+        if not msg.buttons[0] and not msg.buttons[1] and not msg.buttons[2] and not msg.buttons[3]:
+            self.command.wait_event = True
+
         self.currentController.updateStateCommand(msg, self.state, self.command)
 
     def imu_orientation(self,msg):

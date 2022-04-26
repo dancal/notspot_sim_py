@@ -33,7 +33,8 @@ class Command(object):
         self.yaw_rate = 0.
         self.robot_height = -default_height
 
-        self.trot_event = False
-        self.crawl_event = False
-        self.rest_event = False
-        self.stand_event = False
+        self.trot_event     = False
+        self.crawl_event    = False
+        self.rest_event     = False
+        self.stand_event    = False
+        self.wait_event     = False

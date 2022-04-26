@@ -69,19 +69,15 @@ while not rospy.is_shutdown():
     roll    = notspot_robot.state.body_local_orientation[0]
     pitch   = notspot_robot.state.body_local_orientation[1]
     yaw     = notspot_robot.state.body_local_orientation[2]
+
     try:
-        # self.servo_rear_shoulder_left = servo.Servo(self.pca9685_1.channels[self.servo_rear_shoulder_left_channel])
         # FR, FL, RR, RL
         joint_angles    = inverseKinematics.inverse_kinematics(leg_positions, dx, dy, dz, roll, pitch, yaw)
-        servoAngle      = []
-        jointAngle      = []
+
         for i in range(len(joint_angles)):
             publishers[i].publish(joint_angles[i])
-            jointAngle.append( round(joint_angles[i], 3) )
-            angleVal    = round(np.rad2deg(joint_angles[i]) / 5) * 5
-            servoAngle.append( int(angleVal) )
 
-        servoControllers.move(jointAngle, servoAngle)
+        servoControllers.move(joint_angles, notspot_robot.command)
 
     except:
         pass

@@ -81,17 +81,18 @@ class PS3Controller(object):
                     if event.type == pygame.KEYDOWN:
                         print(event.key)
                         #self.button_data    = [0,0,1,0,0,0,0,0,0,0,0] 
-                        self.button_data    = [0,1,0,0,0,0,0,0,0,0,0]      
+                        self.button_data    = [0,0,1,0,0,0,0,0,0,0,0]      
                         if event.key == pygame.K_LEFT:
                             self.axis_data[3]  = (round(-1,2) * -1) * self.available_speeds[self.speed_index]
                         if event.key == pygame.K_RIGHT:
                             self.axis_data[5]  = (round(1,2) * -1) * self.available_speeds[self.speed_index]
                         if event.key == pygame.K_UP:
-                            self.axis_data[0]  = (round(-1,2) * -1) * self.available_speeds[self.speed_index]
+                            self.axis_data[2]  = (round(-1,2) * -1) * self.available_speeds[self.speed_index]
                         if event.key == pygame.K_DOWN:
                             self.axis_data[1]  = (round(1,2) * -1) * self.available_speeds[self.speed_index]
                     elif event.type == pygame.KEYUP:
-                        self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
+                        self.axis_data      = [0.,0.,0.,0.,0.,0.,0.,0.]
+                        self.button_data    = [0,0,0,0,0,0,0,0,0,0,0]      
 
                     joy                 = Joy()
                     joy.header.stamp    = rospy.Time.now()
