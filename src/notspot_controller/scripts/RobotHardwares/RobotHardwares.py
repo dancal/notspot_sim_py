@@ -22,8 +22,52 @@ import math
 # pip install turtle==0.0.1
 
 class ServoItem:
-    pca9685Num  = None
-    pca9685Pin  = 0
+    posName     = None
+    pca9685     = None
+    servoPin    = 0
+    defAngle    = 0
+    direction   = 1
+
+    beforePos   = 0
+    currentPos  = 0
+    def __init__(self, posName, pca9685, servoPin, defAngle, direction):
+        self.posName    = posName
+        self.pca9685    = pca9685
+        self.servoPin   = servoPin
+        self.defAngle   = defAngle
+        self.direction  = direction
+        self.restPos    = 90
+
+    def deg2rad(self, deg):
+        return deg * np.pi / 180.0
+
+    def rad2deg(self, rad):
+        deg = abs(rad) * 180.0 / np.pi
+        if deg > 90:
+            deg = 90
+        elif deg < -90:
+            deg = -90
+        return deg
+
+    def posChange(self):
+        if int( math.floor(self.beforePos / 2) * 2) == int( math.floor(self.currentPos / 2) * 2):
+            return False
+        return True
+
+    def moveRest(self):
+        self.currentPos = self.restPos  # int(math.floor(((self.restPos * self.direction) + self.defAngle)/2)*2)
+        if self.posChange() == True:
+            print(self.posName, ' == rest pos == ', self.currentPos)
+
+        self.beforePos      =  self.currentPos
+
+    def moveAngle(self, angle):
+
+        self.currentPos          = int(math.floor(((self.rad2deg(angle) * self.direction) + self.defAngle)/2)*2)
+        if self.posChange() == True:
+            print(self.posName, ' == move pos == ', self.currentPos)
+
+        self.beforePos      =  self.currentPos
 
 # FR, FL, RR, RL
 class ServoController:
@@ -41,8 +85,7 @@ class ServoController:
 
     def __init__(self):
         print("init")
-        # FR, FL, RR, RL
-
+        
         #self.pca9685_1 = PCA9685(address=0x40) # rear  [ 0, 1, 2, 3, 4, 5 ]
         #self.pca9685_2 = Adafruit_PCA9685.PCA9685(address=0x41) # front [ 0, 1, 2, 3, 4, 5 ]
         
@@ -56,64 +99,25 @@ class ServoController:
         self.ServoKitB          = None
         self.ServoKitF          = None
 
-        #self.servoMoters['FRS'] = ServoItem(self.ServoKitF, 0)
+        # notspot -> FR, FL, RR, RL
+        # LEFT
+        self.servoMoters.append( ServoItem('FRS', self.ServoKitF, 0, 90,  1))      # 0
+        self.servoMoters.append( ServoItem('FRL', self.ServoKitF, 1, 126, -1))     # 1
+        self.servoMoters.append( ServoItem('FRF', self.ServoKitF, 2, 169, -1))     # 2
 
-        self.servoMoters.append( self.ServoKitF,  )
-        self.servoMoters.append( self.ServoKitF )
-        self.servoMoters.append( self.ServoKitF )
-        self.servoMoters.append( self.ServoKitF )
-        self.servoMoters.append( self.ServoKitF )
-        self.servoMoters.append( self.ServoKitF )
+        self.servoMoters.append( ServoItem('FLS', self.ServoKitF, 3, 90,   1))     # 3
+        self.servoMoters.append( ServoItem('FLL', self.ServoKitF, 4, 55,   1))     # 4
+        self.servoMoters.append( ServoItem('FLF', self.ServoKitF, 5, 169, -1))     # 5
 
-        self.servoMoters.append( self.ServoKitB )
-        self.servoMoters.append( self.ServoKitB )
-        self.servoMoters.append( self.ServoKitB )
-        self.servoMoters.append( self.ServoKitB )
-        self.servoMoters.append( self.ServoKitB )
-        self.servoMoters.append( self.ServoKitB )
+        # RIGHT
+        self.servoMoters.append( ServoItem('RRS', self.ServoKitF, 0, 90,   1))     # 6
+        self.servoMoters.append( ServoItem('RRL', self.ServoKitF, 1, 139, -1))     # 7
+        self.servoMoters.append( ServoItem('RRF', self.ServoKitF, 2, 167, -1))     # 8
 
-        self.servoDefAngle  = []
-        self.servoDefAngle.append( 90 )
-        self.servoDefAngle.append( 126 )
-        self.servoDefAngle.append( 169 )
+        self.servoMoters.append( ServoItem('RLS', self.ServoKitF, 3, 90,   1))     # 9
+        self.servoMoters.append( ServoItem('RLL', self.ServoKitF, 4, 42,   1))     # 10
+        self.servoMoters.append( ServoItem('RLF', self.ServoKitF, 5, 167, -1))     # 11
 
-        self.servoDefAngle.append( 90 )
-        self.servoDefAngle.append( 55 )
-        self.servoDefAngle.append( 169 )
-
-        self.servoDefAngle.append( 91 )
-        self.servoDefAngle.append( 139 )
-        self.servoDefAngle.append( 167 )
-
-        self.servoDefAngle.append( 90 )
-        self.servoDefAngle.append( 42 )
-        self.servoDefAngle.append( 167 )
-
-    def _spotStance(self, servoIdx):
-        stance  = 1
-
-        # Shoulder
-        if (servoIdx % 3) == 2:
-            stance  = -1
-
-        if servoIdx == 1 or stance == 2:
-            stance = -1
-
-        if servoIdx == 7 or stance == 7:
-            stance = -1
-
-        return stance
-
-    def deg2rad(self, deg):
-        return deg * np.pi / 180.0
-
-    def rad2deg(self, rad):
-        deg = abs(rad) * 180.0 / np.pi
-        if deg > 90:
-            deg = 90
-        elif deg < -90:
-            deg = -90
-        return deg
 
     #def _moveServo(self, servoAngle):   
     #    for i in range(len(self.servoMoters)):
@@ -123,23 +127,12 @@ class ServoController:
 
     def move(self, joint_angles, state):
         
-        # servoAngle
-        self.servoAngle = []
-        for i in range(len(joint_angles)):
-            stance      = self._spotStance(i)
-            val         = (self.rad2deg(joint_angles[i]) * self._spotStance(i)) + self.servoDefAngle[i]
-            
-            self.servoAngle.append( int( math.floor(val / 2) * 2) )
-
-        bEqual  = array_equal(self.servoAngle, self.servoAnglePre)
-        if bEqual:
-            return
-        
-        # FR, FL, RR, RL
-        #_servoAngle     = self._normalizePos(self.servoAngle)
-        #self._moveServo(_servoAngle)
-        print(self.servoAngle, state.wait_event )
-        self.servoAnglePre  = self.servoAngle
+        #print(state.wait_event)
+        for i in range(len(self.servoMoters)):
+            if state.wait_event == False:
+                self.servoMoters[i].moveAngle(joint_angles[i])
+            else:
+                self.servoMoters[i].moveRest()
 
 if __name__ == "__main__":
     ps4 = ServoController()

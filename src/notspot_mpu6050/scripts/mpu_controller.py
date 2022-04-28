@@ -248,10 +248,10 @@ class mpu6050:
         return [accel, gyro, temp]
 
 def main():
-	rospy.init_node('imu_rawdata_publisher', anonymous=True)
+	rospy.init_node('notspot_imu_publisher', anonymous=True)
 	rate = rospy.Rate(100) # 5hz
 	rospy.loginfo("In main function")
-	pubs_imu = rospy.Publisher('/imu/data_raw', Imu, queue_size = 15)
+	pubs_imu = rospy.Publisher('/notspot_imu/base_link_orientation', Imu, queue_size = 15)
 	pubs_magnetometer = rospy.Publisher('/imu/mag', MagneticField, queue_size = 15)
 	imu_read = Imu()
 	magnetometer_read = MagneticField()

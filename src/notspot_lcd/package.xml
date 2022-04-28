@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>notspot_joystick</name>
+  <name>notspot_lcd</name>
   <version>1.0.0</version>
-  <description>The notspot_joystick package</description>
+  <description>The notspot_lcd package</description>
 
-  <maintainer email="lnotspotl@gmail.com">lnotspotl</maintainer>
+  <maintainer email="dancal@empas.com">dancal</maintainer>
 
   <license>MIT</license>
 

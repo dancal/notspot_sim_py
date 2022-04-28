@@ -75,34 +75,55 @@ class PS3Controller(object):
 
         self.is_activated       = False
         while not rospy.is_shutdown():
-
+            logMessage      = ""
             if joystickCount <= 0:
+                vel             = 0.15
+                playerX         = 1
                 for event in pygame.event.get():
                     if event.type == pygame.KEYDOWN:
                         print(event.key)
-                        #self.button_data    = [0,0,1,0,0,0,0,0,0,0,0] 
-                        self.button_data    = [0,0,1,0,0,0,0,0,0,0,0]      
+                        #self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
+                        self.button_data    = [0,1,0,0,0,0,0,0,0,0,0]      
                         if event.key == pygame.K_LEFT:
-                            self.axis_data[3]  = (round(-1,2) * -1) * self.available_speeds[self.speed_index]
+                            self.axis_data[3]  = round(-1.0 * self.available_speeds[self.speed_index], 2)
                         if event.key == pygame.K_RIGHT:
-                            self.axis_data[5]  = (round(1,2) * -1) * self.available_speeds[self.speed_index]
+                            self.axis_data[4]  = round(-1.0 * self.available_speeds[self.speed_index], 2)
                         if event.key == pygame.K_UP:
-                            self.axis_data[2]  = (round(-1,2) * -1) * self.available_speeds[self.speed_index]
+                            self.axis_data[1]  = (round(-1,2) * -1) * self.available_speeds[self.speed_index]
                         if event.key == pygame.K_DOWN:
-                            self.axis_data[1]  = (round(1,2) * -1) * self.available_speeds[self.speed_index]
-                    elif event.type == pygame.KEYUP:
-                        self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
-                        self.button_data    = [0,0,0,0,0,0,0,0,0,0,0]      
+                            self.axis_data[2]  = (round(1,2) * -1) * self.available_speeds[self.speed_index]
+                        if event.key == pygame.K_a:      # A
+                            self.button_data    = [1,0,0,0,0,0,0,0,0,0,0]
+                            logMessage          = "rest"
+                        elif event.key == pygame.K_b:      # B
+                            self.button_data    = [0,1,0,0,0,0,0,0,0,0,0]                     
+                            logMessage          = "trot"
+                        elif event.key == pygame.K_x:      # X
+                            self.button_data    = [0,0,1,0,0,0,0,0,0,0,0]                   
+                            logMessage          = "crawl"
+                        elif event.key == pygame.K_y:      # Y
+                            self.button_data    = [0,0,0,1,0,0,0,0,0,0,0]                 
+                            logMessage          = "stand"
+                        else:
+                            self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
+                            self.button_data    = [0,0,0,0,0,0,0,0,0,0,0]      
+
+                    #elif event.type == pygame.KEYUP:
+                        #self.button_data    = [0,0,0,0,0,0,0,0,0,0,0]      
 
                     joy                 = Joy()
                     joy.header.stamp    = rospy.Time.now()
                     joy.axes            = self.axis_data
                     joy.buttons         = self.button_data
                     self.publisher.publish(joy)
+
+                    if logMessage:
+                        rospy.loginfo(logMessage)
+                        logMessage              = ''
+
                 continue
 
             # JoyStick
-            logMessage      = ""
             for event in pygame.event.get():
                 if event.type == pygame.JOYBUTTONDOWN and event.button == 11:
                     # Press START/OPTIONS to enable the servos
