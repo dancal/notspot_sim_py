@@ -91,7 +91,7 @@ class PS3Controller(object):
                         if event.key == pygame.K_DOWN:
                             self.axis_data[1]  = (round(1,2) * -1) * self.available_speeds[self.speed_index]
                     elif event.type == pygame.KEYUP:
-                        self.axis_data      = [0.,0.,0.,0.,0.,0.,0.,0.]
+                        self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
                         self.button_data    = [0,0,0,0,0,0,0,0,0,0,0]      
 
                     joy                 = Joy()

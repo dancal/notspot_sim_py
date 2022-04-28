@@ -104,6 +104,9 @@ class ServoController:
 
         return stance
 
+    def deg2rad(self, deg):
+        return deg * np.pi / 180.0
+
     def rad2deg(self, rad):
         deg = abs(rad) * 180.0 / np.pi
         if deg > 90:
