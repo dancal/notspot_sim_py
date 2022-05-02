@@ -64,40 +64,37 @@ class Robot(object):
             self.currentController.pid_controller.reset()
             self.command.rest_event = False
 
-        elif self.command.wait_event:
-            self.state.behavior_state = BehaviorState.REST
-            self.currentController = self.restController
-            self.currentController.pid_controller.reset()
-            self.command.rest_event = False
-
     def joystick_command(self,msg):
         if msg.buttons[0]: # rest
             self.command.trot_event = False
             self.command.crawl_event = False
             self.command.stand_event = False
             self.command.rest_event = True
+            self.command.wait_event = False
 
         elif msg.buttons[1]: # trot
             self.command.trot_event = True
             self.command.crawl_event = False
             self.command.stand_event = False
             self.command.rest_event = False
+            self.command.wait_event = False
 
-        elif msg.buttons[2]: # crawl
+        elif msg.buttons[3]: # crawl
             self.command.trot_event = False
             self.command.crawl_event = True
             self.command.stand_event = False
             self.command.rest_event = False
+            self.command.wait_event = False
 
-        elif msg.buttons[3]: # stand
+        elif msg.buttons[4]: # stand
             self.command.trot_event = False
             self.command.crawl_event = False
             self.command.stand_event = True
             self.command.rest_event = False
-      
-        self.command.wait_event = False
-        if not msg.buttons[0] and not msg.buttons[1] and not msg.buttons[2] and not msg.buttons[3]:
-            self.command.wait_event = True
+            self.command.wait_event = False
+
+        print(self.command)
+        print('crawl_event=', self.command.crawl_event, 'trot_event=', self.command.trot_event, 'stand_event=', self.command.stand_event, 'rest_event=', self.command.rest_event, 'wait_event=', self.command.wait_event)
 
         self.currentController.updateStateCommand(msg, self.state, self.command)
 

@@ -128,14 +128,13 @@ class PS3Controller(object):
                 if event.type == pygame.JOYBUTTONDOWN and event.button == 11:
                     # Press START/OPTIONS to enable the servos
                     self.axis_data          = [0.,0.,1.,0.,0.,1.,0.,0.]
-                    self.button_data        = [1,0,0,0,0,0,0,0,0,0,0]
                     if self.is_activated:
                         rospy.loginfo('STOP')
                         self.is_activated   = False
                     else:
                         rospy.loginfo('START')
                         self.is_activated   = True
-                        self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
+                        #self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
                         self.button_data    = [1,0,0,0,0,0,0,0,0,0,0]
                         logMessage          = 'rest'
 
@@ -166,12 +165,15 @@ class PS3Controller(object):
                         self.button_data    = [0,1,0,0,0,0,0,0,0,0,0]                     
                         logMessage          = "trot"
                     elif event.button == 3:      # X
-                        self.button_data    = [0,0,1,0,0,0,0,0,0,0,0]                   
+                        self.button_data    = [0,0,0,1,0,0,0,0,0,0,0]                   
                         logMessage          = "crawl"
                     elif event.button == 4:      # Y
-                        self.button_data    = [0,0,0,1,0,0,0,0,0,0,0]                 
+                        self.button_data    = [0,0,0,0,1,0,0,0,0,0,0]                 
                         logMessage          = "stand"
- 
+                    #elif event.button == 8:      # Home
+                    #    self.button_data    = [0,0,0,0,0,0,0,1,0,0,0]                 
+                    #    logMessage          = "home"
+
                 elif event.type == pygame.JOYHATMOTION:
                     self.hat_data[event.hat] = event.value
 
@@ -180,7 +182,7 @@ class PS3Controller(object):
                 joy.axes            = self.axis_data
                 joy.buttons         = self.button_data
                 self.publisher.publish(joy)
-                    
+                print(self.button_data)
                 if logMessage:
                     rospy.loginfo(logMessage)
                     logMessage              = ''

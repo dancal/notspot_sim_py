@@ -129,10 +129,11 @@ class ServoController:
         
         #print(state.wait_event)
         for i in range(len(self.servoMoters)):
-            if state.wait_event == False:
-                self.servoMoters[i].moveAngle(joint_angles[i])
-            else:
-                self.servoMoters[i].moveRest()
+            self.servoMoters[i].moveAngle(joint_angles[i])
+            #if state.wait_event == False:
+            #    self.servoMoters[i].moveAngle(joint_angles[i])
+            #else:
+            #    self.servoMoters[i].moveRest()
 
 if __name__ == "__main__":
     ps4 = ServoController()

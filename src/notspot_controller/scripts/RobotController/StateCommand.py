@@ -5,10 +5,11 @@ import numpy as np
 from enum import Enum
 
 class BehaviorState(Enum):
-    REST = 0
-    TROT = 1
-    CRAWL = 2
-    STAND = 3
+    REST    = 0
+    TROT    = 1
+    CRAWL   = 2
+    STAND   = 3
+    WAIT    = 4
 
 class State(object):
     def __init__(self,default_height):
