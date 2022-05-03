@@ -7,7 +7,7 @@ import numpy as np
 class StandController(object):
     def __init__(self, default_stance):
         self.def_stance = default_stance
-        self.max_reach = 0.065
+        self.max_reach = 0.075
 
         self.FR_X = 0.
         self.FR_Y = 0.
@@ -16,6 +16,8 @@ class StandController(object):
 
     def updateStateCommand(self,msg,state,command):
         state.body_local_position[0] = msg.axes[7] * 0.14
+        print(state.body_local_position) 
+
         self.FR_X = msg.axes[1]
         self.FR_Y = msg.axes[0]
 
@@ -36,6 +38,8 @@ class StandController(object):
 
         temp[1][1] += self.FL_Y * self.max_reach
         temp[0][1] += self.FL_X * self.max_reach
-            
+
+        # FR, FL, RR, RL
+
         state.foot_locations = temp
         return state.foot_locations

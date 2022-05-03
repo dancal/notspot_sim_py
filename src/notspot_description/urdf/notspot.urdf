@@ -8,7 +8,7 @@
 <robot name="notspot" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <!-- Maximum torque -->
-  <xacro:property name="effort_limit" value="1.2" />
+  <xacro:property name="effort_limit" value="3.2" />
 
   <!-- base_link -->
   <link name="base_link">

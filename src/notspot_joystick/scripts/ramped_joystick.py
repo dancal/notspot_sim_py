@@ -76,11 +76,8 @@ class PS3Controller(object):
         while not rospy.is_shutdown():
             logMessage      = ""
             if joystickCount <= 0:
-                vel             = 0.15
-                playerX         = 1
                 for event in pygame.event.get():
                     if event.type == pygame.KEYDOWN:
-                        print(event.key)
                         #self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
                         #self.button_data    = [0,1,0,0,0,0,0,0,0,0,0]      
                         # 6 : LL
@@ -102,7 +99,8 @@ class PS3Controller(object):
                             self.button_data    = [0,0,0,1,0,0,0,0,0,0,0]                   
                             logMessage          = "crawl"
                         elif event.key == pygame.K_y:      # Y
-                            self.button_data    = [0,0,0,0,1,0,0,0,0,0,0]                 
+                            self.button_data    = [0,0,0,0,1,0,0,0,0,0,0]  
+                            self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,-0.75]               
                             logMessage          = "stand"
 
                     elif event.type == pygame.KEYUP:
@@ -166,6 +164,7 @@ class PS3Controller(object):
                         self.button_data    = [0,0,0,1,0,0,0,0,0,0,0]                   
                         logMessage          = "crawl"
                     elif event.button == 4:      # Y
+                        self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,-0.70]
                         self.button_data    = [0,0,0,0,1,0,0,0,0,0,0]                 
                         logMessage          = "stand"
                     #elif event.button == 8:      # Home

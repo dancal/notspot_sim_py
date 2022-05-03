@@ -92,10 +92,15 @@ class Robot(object):
             self.command.stand_event = True
             self.command.rest_event = False
             self.command.wait_event = False
+        else:
+            self.command.trot_event = False
+            self.command.crawl_event = False
+            self.command.stand_event = False
+            self.command.rest_event = True
+            self.command.wait_event = True
 
-        print(self.command)
-        print('crawl_event=', self.command.crawl_event, 'trot_event=', self.command.trot_event, 'stand_event=', self.command.stand_event, 'rest_event=', self.command.rest_event, 'wait_event=', self.command.wait_event)
-
+        #print(msg.axes)
+        #print('crawl_event=', self.command.crawl_event, 'trot_event=', self.command.trot_event, 'stand_event=', self.command.stand_event, 'rest_event=', self.command.rest_event, 'wait_event=', self.command.wait_event)
         self.currentController.updateStateCommand(msg, self.state, self.command)
 
     def imu_orientation(self,msg):
@@ -109,7 +114,7 @@ class Robot(object):
 
     @property
     def default_stance(self):
-        # FR, FL, RR, RL
+        #                 FR,                              ,FL,                              ,RR                               ,RL
         return np.array([[self.delta_x + self.x_shift_front,self.delta_x + self.x_shift_front,-self.delta_x + self.x_shift_back,-self.delta_x + self.x_shift_back],
                          [-self.delta_y                    ,self.delta_y                     ,-self.delta_y                    , self.delta_y                    ],
                          [0                                ,0                                ,0                                ,0                                ]])
