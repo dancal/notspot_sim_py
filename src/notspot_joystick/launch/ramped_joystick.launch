@@ -1,0 +1,8 @@
+<launch>
+
+
+    <!-- Ramped Joystick node -->
+    <node pkg="notspot_joystick" type="ramped_joystick.py"
+        name="RAMPED_JOYSTICK" output="screen"/>
+
+</launch>
