@@ -65,7 +65,6 @@ class PS3Controller(object):
                 for i in range(self.controller.get_numhats()):
                     self.hat_data[i] = (0, 0)
 
-
         else:
             pygame.display.set_caption("SPOTMICRO")
             self.screen      = pygame.display.set_mode((600, 600))
@@ -83,15 +82,16 @@ class PS3Controller(object):
                     if event.type == pygame.KEYDOWN:
                         print(event.key)
                         #self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
-                        self.button_data    = [0,1,0,0,0,0,0,0,0,0,0]      
+                        #self.button_data    = [0,1,0,0,0,0,0,0,0,0,0]      
+                        # 6 : LL
                         if event.key == pygame.K_LEFT:
-                            self.axis_data[3]  = round(-1.0 * self.available_speeds[self.speed_index], 2)
+                            self.axis_data[3]  = round(1.0 * self.available_speeds[self.speed_index], 2)
                         if event.key == pygame.K_RIGHT:
-                            self.axis_data[4]  = round(-1.0 * self.available_speeds[self.speed_index], 2)
+                            self.axis_data[3]  = round(-1.0 * self.available_speeds[self.speed_index], 2)
                         if event.key == pygame.K_UP:
-                            self.axis_data[1]  = (round(-1,2) * -1) * self.available_speeds[self.speed_index]
+                            self.axis_data[4]  = round(1.0 * self.available_speeds[self.speed_index], 3)
                         if event.key == pygame.K_DOWN:
-                            self.axis_data[2]  = (round(1,2) * -1) * self.available_speeds[self.speed_index]
+                            self.axis_data[4]  = round(-1.0 * self.available_speeds[self.speed_index], 3)
                         if event.key == pygame.K_a:      # A
                             self.button_data    = [1,0,0,0,0,0,0,0,0,0,0]
                             logMessage          = "rest"
@@ -99,17 +99,15 @@ class PS3Controller(object):
                             self.button_data    = [0,1,0,0,0,0,0,0,0,0,0]                     
                             logMessage          = "trot"
                         elif event.key == pygame.K_x:      # X
-                            self.button_data    = [0,0,1,0,0,0,0,0,0,0,0]                   
+                            self.button_data    = [0,0,0,1,0,0,0,0,0,0,0]                   
                             logMessage          = "crawl"
                         elif event.key == pygame.K_y:      # Y
-                            self.button_data    = [0,0,0,1,0,0,0,0,0,0,0]                 
+                            self.button_data    = [0,0,0,0,1,0,0,0,0,0,0]                 
                             logMessage          = "stand"
-                        else:
-                            self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
-                            self.button_data    = [0,0,0,0,0,0,0,0,0,0,0]      
 
-                    #elif event.type == pygame.KEYUP:
-                        #self.button_data    = [0,0,0,0,0,0,0,0,0,0,0]      
+                    elif event.type == pygame.KEYUP:
+                        #self.button_data    = [1,0,0,0,0,0,0,0,0,0,0]      
+                        self.axis_data      = [0.,0.,1.,0.,0.,1.,0.,0.]
 
                     joy                 = Joy()
                     joy.header.stamp    = rospy.Time.now()
