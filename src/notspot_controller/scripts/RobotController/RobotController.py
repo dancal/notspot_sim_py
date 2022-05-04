@@ -71,6 +71,7 @@ class Robot(object):
             self.command.stand_event = False
             self.command.rest_event = True
             self.command.wait_event = False
+            print("rest")
 
         elif msg.buttons[1]: # trot
             self.command.trot_event = True
@@ -78,6 +79,7 @@ class Robot(object):
             self.command.stand_event = False
             self.command.rest_event = False
             self.command.wait_event = False
+            print("trot")
 
         elif msg.buttons[3]: # crawl
             self.command.trot_event = False
@@ -85,6 +87,7 @@ class Robot(object):
             self.command.stand_event = False
             self.command.rest_event = False
             self.command.wait_event = False
+            print("crawl")
 
         elif msg.buttons[4]: # stand
             self.command.trot_event = False
@@ -92,6 +95,8 @@ class Robot(object):
             self.command.stand_event = True
             self.command.rest_event = False
             self.command.wait_event = False
+            print("stand")
+
         else:
             self.command.trot_event = False
             self.command.crawl_event = False

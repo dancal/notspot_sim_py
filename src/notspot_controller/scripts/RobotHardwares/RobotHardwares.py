@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 #Author: dancal
 
-#from board import SCL, SDA
-#from turtle import pos
-#from adafruit_pca9685 import PCA9685
-#from adafruit_motor import servoMoter
+from board import SCL, SDA
 
 #from adafruit_motor import servo
-#import Adafruit_PCA9685 as PCA9685
-#from adafruit_servokit import ServoKit
+from adafruit_pca9685 import PCA9685
+from adafruit_servokit import ServoKit
 
 from numpy import array_equal, sin, cos, pi
 import numpy as np
@@ -67,7 +64,8 @@ class ServoItem:
 
         self.currentPos          = int(math.floor(((self.rad2deg(angle) * self.direction) + self.defAngle)/2)*2)
         if self.posChange() == True:
-            print(self.posName, ' == move pos == ', self.currentPos)
+            print(self.posName, ' == move pos == ', self.currentPos, ' == servopin == ', self.servoPin)
+            self.pca9685.servo[self.servoPin].angle = self.currentPos
 
         self.beforePos      =  self.currentPos
 
@@ -88,21 +86,13 @@ class ServoController:
     def __init__(self):
         print("init")
         
-        #self.pca9685_1 = PCA9685(address=0x40) # rear  [ 0, 1, 2, 3, 4, 5 ]
-        #self.pca9685_2 = Adafruit_PCA9685.PCA9685(address=0x41) # front [ 0, 1, 2, 3, 4, 5 ]
-        
-        # self.pca9685_1 = PCA9685(self.i2c, address=self.pca9685_1_address, reference_clock_speed=self.pca9685_1_reference_clock_speed)
-        # self.pca9685_1.frequency = self.pca9685_1_frequency
-
-        # self.pca9685_2.channels[0]
-
-        #self.ServoKitB          = ServoKit(channels=6, address=0x40)
-        #self.ServoKitF          = ServoKit(channels=6, address=0x41)
-        self.ServoKitB          = None
-        self.ServoKitF          = None
+        self.ServoKitB          = ServoKit(channels=16, address=0x40)
+        self.ServoKitF          = ServoKit(channels=16, address=0x41)
+        #self.ServoKitB          = None
+        #self.ServoKitF          = None
 
         # notspot -> FR, FL, RR, RL
-        # LEFT
+        # FRONT
         self.servoMoters.append( ServoItem('FRS', self.ServoKitF, 0, 90,  1))      # 0
         self.servoMoters.append( ServoItem('FRL', self.ServoKitF, 1, 126, -1))     # 1
         self.servoMoters.append( ServoItem('FRF', self.ServoKitF, 2, 169, -1))     # 2
@@ -111,14 +101,14 @@ class ServoController:
         self.servoMoters.append( ServoItem('FLL', self.ServoKitF, 4, 55,   1))     # 4
         self.servoMoters.append( ServoItem('FLF', self.ServoKitF, 5, 169, -1))     # 5
 
-        # RIGHT
-        self.servoMoters.append( ServoItem('RRS', self.ServoKitF, 0, 90,   1))     # 6
-        self.servoMoters.append( ServoItem('RRL', self.ServoKitF, 1, 139, -1))     # 7
-        self.servoMoters.append( ServoItem('RRF', self.ServoKitF, 2, 167, -1))     # 8
+        # REAR
+        self.servoMoters.append( ServoItem('RRS', self.ServoKitB, 0, 90,   1))     # 6
+        self.servoMoters.append( ServoItem('RRL', self.ServoKitB, 1, 139, -1))     # 7
+        self.servoMoters.append( ServoItem('RRF', self.ServoKitB, 2, 167, -1))     # 8
 
-        self.servoMoters.append( ServoItem('RLS', self.ServoKitF, 3, 90,   1))     # 9
-        self.servoMoters.append( ServoItem('RLL', self.ServoKitF, 4, 42,   1))     # 10
-        self.servoMoters.append( ServoItem('RLF', self.ServoKitF, 5, 167, -1))     # 11
+        self.servoMoters.append( ServoItem('RLS', self.ServoKitB, 3, 90,   1))     # 9
+        self.servoMoters.append( ServoItem('RLL', self.ServoKitB, 4, 42,   1))     # 10
+        self.servoMoters.append( ServoItem('RLF', self.ServoKitB, 5, 167, -1))     # 11
 
 
     #def _moveServo(self, servoAngle):   

@@ -20,7 +20,7 @@
     </node>
     
     <!-- Robot controller -->
-    <node pkg="notspot_controller" type="robot_controller_servo.py" name="ROBOT_CONTROLLER" output="screen"/>
+    <!-- <node pkg="notspot_controller" type="robot_controller_servo.py" name="ROBOT_CONTROLLER" output="screen"/> -->
   
     <!-- Joystick -->
     <!--<include file="$(find notspot_joystick)/launch/ramped_joystick.launch" /> -->
