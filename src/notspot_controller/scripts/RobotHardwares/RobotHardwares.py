@@ -17,6 +17,8 @@ import math
 # roslaunch notspot run_robot_hardware.launch
 # roslaunch notspot_joystick ramped_joystick.launch
 
+# apt-get install ros-noetick-joy
+# pip3 install pygame
 # pip3 install adafruit-circuitpython-motor
 # pip3 install adafruit-circuitpython-servokit
 # pip install turtle==0.0.1
