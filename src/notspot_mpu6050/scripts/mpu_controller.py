@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import serial
 import rospy
@@ -251,8 +251,8 @@ def main():
 	rospy.init_node('notspot_imu_publisher', anonymous=True)
 	rate = rospy.Rate(100) # 5hz
 	rospy.loginfo("In main function")
-	pubs_imu = rospy.Publisher('/notspot_imu/base_link_orientation', Imu, queue_size = 15)
-	pubs_magnetometer = rospy.Publisher('/imu/mag', MagneticField, queue_size = 15)
+	pubs_imu = rospy.Publisher('notspot_imu/base_link_orientation', Imu, queue_size = 15)
+	pubs_magnetometer = rospy.Publisher('imu/mag', MagneticField, queue_size = 15)
 	imu_read = Imu()
 	magnetometer_read = MagneticField()
 	gyro_x, gyro_y, gyro_z, count = 0,0,0,0
@@ -263,7 +263,7 @@ def main():
 		gyro_data = mpu.get_gyro_data()
 
 		imu_read.header.stamp = rospy.Time.now()
-		imu_read.header.frame_id = "body_frame"
+		imu_read.header.frame_id = "base_link"
 		
 		### Accelerometer data
 		imu_read.linear_acceleration.x = accel_data['x']
@@ -305,7 +305,6 @@ def main():
 	rate.sleep()
 	rospy.loginfo("Node is shutting down")
 
-		
 if __name__ == '__main__':
 	main()
 

@@ -1,7 +1,5 @@
 <launch>
 
-    <node pkg="notspot_controller" type="robot_controller_servo.py" name="ROBOT_CONTROLLER" output="screen"/>
-
     <!-- Joystick node -->
     <node respawn="true" pkg="joy" type="joy_node" name="JOYSTICK">
         <param name="joy_node/dev" value="/dev/input/js0"/>

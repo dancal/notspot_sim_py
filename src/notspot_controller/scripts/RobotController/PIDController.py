@@ -24,6 +24,7 @@ class PID_controller(object):
     def run(self, roll, pitch):
         # determine error
         error = self.desired_roll_pitch - np.array([roll, pitch])
+        #print('error=', error, 'desired_roll_pitch=', self.desired_roll_pitch, 'roll=', roll, 'pitch=', pitch)
 
         # determine time step
         t_now = rospy.Time.now()

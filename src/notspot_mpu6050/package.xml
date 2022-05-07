@@ -2,7 +2,7 @@
 <package format="2">
   <name>notspot_mpu6050</name>
   <version>0.0.0</version>
-  <description>The mpu6050_ros package</description>
+  <description>The notspot_mpu6050 package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->

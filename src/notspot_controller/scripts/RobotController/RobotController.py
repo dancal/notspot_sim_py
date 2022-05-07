@@ -102,6 +102,7 @@ class Robot(object):
         rpy_angles = tf.transformations.euler_from_quaternion([q.x,q.y,q.z,q.w])
         self.state.imu_roll = rpy_angles[0]
         self.state.imu_pitch = rpy_angles[1]
+        print('rpy_angles=', msg)
 
     def run(self):
         return self.currentController.run(self.state, self.command)

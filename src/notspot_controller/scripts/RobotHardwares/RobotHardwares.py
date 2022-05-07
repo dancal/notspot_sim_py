@@ -11,11 +11,16 @@ from numpy import array_equal, sin, cos, pi
 import numpy as np
 import math
 import time
+
+# roslaunch notspot run_robot_real.launch
+
 # roslaunch notspot run_robot_gazebo.launch
 # roslaunch notspot run_robot_hardware.launch
+# roslaunch notspot_mpu6050 mpu.launch
 # roslaunch notspot_joystick ramped_joystick.launch
 
-# apt-get install ros-noetick-joy
+# apt-get install ros-noetic-joy
+# apt-get install ros-noetic-imu-tools
 # pip3 install pygame
 # pip3 install adafruit-circuitpython-motor
 # pip3 install adafruit-circuitpython-servokit
@@ -62,14 +67,11 @@ class ServoItem:
         return True
 
     def moveAngle(self, angle):
-
-        #curPos                  = int(math.floor(((self.rad2deg(angle)) + self.defAngle)/2)*2)
-        #curPos                  = int(math.floor(((self.rad2deg(angle) * self.direction) + self.defAngle)/2)*2)
         curPos                  = int(math.floor(((self.rad2deg(angle) * self.direction) + self.defAngle)))
         self.currentPos         = curPos + self.restPos
         if self.posChange(self.currentPos) == True:
             self.pca9685.servo[self.servoPin].angle = self.currentPos
-            print(self.posName, 'curPos =', curPos, 'Angle = ', self.currentPos, 'beforePos =', self.beforePos, ' == servopin == ', self.servoPin, ', angle = ', angle, 'rad2deg = ', self.rad2deg(angle))
+            #print(self.posName, 'curPos =', curPos, 'Angle = ', self.currentPos, 'beforePos =', self.beforePos, ' == servopin == ', self.servoPin, ', angle = ', angle, 'rad2deg = ', self.rad2deg(angle))
 
         self.beforePos      =  self.currentPos
 
@@ -88,7 +90,7 @@ class ServoController:
     servoMoters         = []
 
     def __init__(self):
-        print("init")
+        print("hardware init")
         
         self.ServoKitB          = ServoKit(channels=16, address=0x40)
         self.ServoKitF          = ServoKit(channels=16, address=0x41)
