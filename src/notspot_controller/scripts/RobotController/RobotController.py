@@ -15,16 +15,14 @@ class Robot(object):
         self.body = body
         self.legs = legs
 
-        self.delta_x = self.body[0] * 0.5
-        self.delta_y = self.body[1] * 0.5 + self.legs[1]
-        self.x_shift_front = 0.006
-        self.x_shift_back = -0.03
-        self.default_height = 0.15
+        self.delta_x            = self.body[0] * 0.5
+        self.delta_y            = self.body[1] * 0.5 + self.legs[1]
+        self.x_shift_front      = 0.008
+        self.x_shift_back       = -0.02
+        self.default_height     = 0.16
 
-        self.trotGaitController = TrotGaitController(self.default_stance, stance_time = 0.18, swing_time = 0.24, time_step = 0.02, use_imu = imu)
-
+        self.trotGaitController = TrotGaitController(self.default_stance, stance_time = 0.26, swing_time = 0.24, time_step = 0.02, use_imu = imu)
         self.crawlGaitController = CrawlGaitController(self.default_stance, stance_time = 0.55, swing_time = 0.45, time_step = 0.02)
-            
         self.standController = StandController(self.default_stance)
 
         self.restController = RestController(self.default_stance)
@@ -97,15 +95,6 @@ class Robot(object):
             self.command.wait_event = False
             print("stand")
 
-        else:
-            self.command.trot_event = False
-            self.command.crawl_event = False
-            self.command.stand_event = False
-            self.command.rest_event = True
-            self.command.wait_event = True
-
-        #print(msg.axes)
-        #print('crawl_event=', self.command.crawl_event, 'trot_event=', self.command.trot_event, 'stand_event=', self.command.stand_event, 'rest_event=', self.command.rest_event, 'wait_event=', self.command.wait_event)
         self.currentController.updateStateCommand(msg, self.state, self.command)
 
     def imu_orientation(self,msg):

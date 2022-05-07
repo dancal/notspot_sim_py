@@ -50,3 +50,10 @@ I'd like to make all the 3D models open-source, so that anybody can build this r
 
 ## Credits
  - mike4192: https://github.com/mike4192/spotMicro
+
+
+
+## roslaunch notspot run_robot_gazebo.launch
+roslaunch notspot run_robot_hardware.launch
+roslaunch notspot_joystick ramped_joystick.launch
+roslaunch notspot_mpu6050 mpu.launch

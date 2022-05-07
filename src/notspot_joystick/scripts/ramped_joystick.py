@@ -32,7 +32,7 @@ class PS4_controller(object):
         self.use_button = True
 
         self.speed_index = 2
-        self.available_speeds = [0.5, 1.0, 3.0, 4.0]
+        self.available_speeds = [1.0, 2.0, 3.0, 4.0]
         rospy.loginfo(f"PS4 init")
 
     def run(self):
@@ -106,5 +106,5 @@ class PS4_controller(object):
         self.last_send_time = t_now
 
 if __name__ == "__main__":
-    joystick = PS4_controller(rate = 30)
+    joystick = PS4_controller(rate = 100)
     joystick.run()
