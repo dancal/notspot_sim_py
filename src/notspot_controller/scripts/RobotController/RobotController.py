@@ -3,6 +3,7 @@
 
 import numpy as np
 import tf
+import math
 
 from . StateCommand import State, Command, BehaviorState
 from . RestController import RestController
@@ -100,9 +101,18 @@ class Robot(object):
     def imu_orientation(self,msg):
         q = msg.orientation
         rpy_angles = tf.transformations.euler_from_quaternion([q.x,q.y,q.z,q.w])
-        self.state.imu_roll = rpy_angles[0]
-        self.state.imu_pitch = rpy_angles[1]
-        print('rpy_angles=', msg)
+        self.state.imu_roll     = rpy_angles[0] * 0.1
+        self.state.imu_pitch    = rpy_angles[1] * 0.1
+        print('rpy_angles=', rpy_angles)
+
+        # orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
+        # linear_acceleration
+        # angular_velocity
+        #rpy_angles = tf.transformations.euler_from_quaternion([q.x,q.y,q.z,q.w])
+        #self.state.imu_roll = rpy_angles[0]
+        #self.state.imu_pitch = rpy_angles[1]
+        #self.state.imu_roll = q.x
+        #self.state.imu_pitch = q.y
 
     def run(self):
         return self.currentController.run(self.state, self.command)
