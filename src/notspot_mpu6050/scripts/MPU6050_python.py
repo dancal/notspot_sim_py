@@ -41,13 +41,12 @@ class IMUNode:
                 time.sleep(0.01)
 
         except:
-            rospy.logerr("Can not receive data from the I2C device: "+ self.imu_i2c + 
-            ". Did you specify the correct No. ?")
+            rospy.logerr("Can not receive data from the I2C device: "+ self.imu_i2c +  ". Did you specify the correct No. ?")
             sys.exit(0) 
         rospy.loginfo("Communication success !")
 
         # ROS handler        
-        self.pub = rospy.Publisher('imu_data', Imu, queue_size=1)   
+        self.pub = rospy.Publisher('notspot/imu_data', Imu, queue_size=1)   
         self.timer_pub = rospy.Timer(rospy.Duration(1.0/self.pub_freq), self.timerCB) 
 
     def timerCB(self, event):    
