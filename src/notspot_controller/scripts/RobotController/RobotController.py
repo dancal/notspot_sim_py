@@ -6,6 +6,7 @@ import tf
 import math
 
 from . StateCommand import State, Command, BehaviorState
+from . LieController import LieController
 from . RestController import RestController
 from . TrotGaitController import TrotGaitController
 from . CrawlGaitController import CrawlGaitController
@@ -26,7 +27,9 @@ class Robot(object):
         self.crawlGaitController = CrawlGaitController(self.default_stance, stance_time = 0.55, swing_time = 0.45, time_step = 0.02)
         self.standController = StandController(self.default_stance)
 
+        self.lieController = LieController(self.default_stance)
         self.restController = RestController(self.default_stance)
+        
 
         self.currentController = self.restController
         self.state = State(self.default_height)
@@ -101,8 +104,8 @@ class Robot(object):
     def imu_orientation(self,msg):
         q = msg.orientation
         rpy_angles = tf.transformations.euler_from_quaternion([q.x,q.y,q.z,q.w])
-        self.state.imu_roll     = rpy_angles[0] * 0.1
-        self.state.imu_pitch    = rpy_angles[1] * 0.1
+        self.state.imu_roll     = rpy_angles[0]
+        self.state.imu_pitch    = rpy_angles[1]
         print('rpy_angles=', rpy_angles)
 
         # orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]

@@ -12,7 +12,8 @@ class RestController(object):
 
         # TODO: tune kp, ki and kd
         #                                     kp     ki    kd
-        self.pid_controller = PID_controller(0.75, 2.29, 0.0)
+        #self.pid_controller = PID_controller(1.75, 3.29, 0.0)
+        self.pid_controller = PID_controller(0.45, 1.29, 0.0)
         self.use_imu = True
         self.use_button = True
         self.pid_controller.reset()
@@ -51,8 +52,8 @@ class RestController(object):
         # using a PID controller
         if self.use_imu:
             compensation = self.pid_controller.run(state.imu_roll, state.imu_pitch)
-            roll_compensation = -compensation[0]
-            pitch_compensation = -compensation[1]
+            roll_compensation = compensation[0]
+            pitch_compensation = compensation[1]
 
             rot = rotxyz(roll_compensation,pitch_compensation,0)
             temp = np.matmul(rot,temp)

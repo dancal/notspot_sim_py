@@ -16,8 +16,10 @@ import time
 
 # roslaunch notspot run_robot_gazebo.launch
 # roslaunch notspot run_robot_hardware.launch
+
 # roslaunch notspot_mpu6050 mpu.launch
 # roslaunch notspot_joystick ramped_joystick.launch
+# roslaunch notspot_lcd lcd.launch
 
 # apt-get install ros-noetic-joy
 # apt-get install ros-noetic-imu-tools
@@ -43,8 +45,8 @@ class ServoItem:
         self.direction  = direction
         self.restPos    = restPos
 
+        self.pca9685.servo[self.servoPin].actuation_range = 180
         self.pca9685.servo[self.servoPin].set_pulse_width_range(500, 2500)
-
 
     def deg2rad(self, deg):
         return deg * np.pi / 180.0
@@ -68,10 +70,18 @@ class ServoItem:
 
     def moveAngle(self, angle):
         curPos                  = int(math.floor(((self.rad2deg(angle) * self.direction) + self.defAngle)))
+        if self.posName == "RLL":
+            if curPos < 50:
+                curPos = 50
+            if curPos > 110:
+                curPos = 110
+        if self.posName == "RRL":
+            if curPos > 140:
+                curPos = 140
         self.currentPos         = curPos + self.restPos
         if self.posChange(self.currentPos) == True:
             self.pca9685.servo[self.servoPin].angle = self.currentPos
-            #print(self.posName, 'curPos =', curPos, 'Angle = ', self.currentPos, 'beforePos =', self.beforePos, ' == servopin == ', self.servoPin, ', angle = ', angle, 'rad2deg = ', self.rad2deg(angle))
+            print(self.posName, 'curPos =', curPos, 'Angle = ', self.currentPos, 'beforePos =', self.beforePos, ' == servopin == ', self.servoPin, ', angle = ', angle, 'rad2deg = ', self.rad2deg(angle))
 
         self.beforePos      =  self.currentPos
 
@@ -98,9 +108,9 @@ class ServoController:
         #self.ServoKitF          = None
 
         # FRONT
-        self.servoMoters.append( ServoItem('FLS', self.ServoKitF, 0, 90,   1, 10))     # 0
+        self.servoMoters.append( ServoItem('FLS', self.ServoKitF, 0, 90,   1, 5))     # 0
         self.servoMoters.append( ServoItem('FLL', self.ServoKitF, 1, 60,   1, 50))     # 1
-        self.servoMoters.append( ServoItem('FLF', self.ServoKitF, 2, 160,  1, 5))     # 2
+        self.servoMoters.append( ServoItem('FLF', self.ServoKitF, 2, 160,  1, 0))     # 2
 
         self.servoMoters.append( ServoItem('FRS', self.ServoKitF, 3, 90,   1, -10))     # 3
         self.servoMoters.append( ServoItem('FRL', self.ServoKitF, 4, 122, -1, -45))     # 4
@@ -119,5 +129,7 @@ class ServoController:
         for i in range(len(self.servoMoters)):
             self.servoMoters[i].moveAngle(joint_angles[i])
 
+        time.sleep(0.005)
+        
 if __name__ == "__main__":
     ps4 = ServoController()

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(notspot_mpu6050_2)
+project(notspot_mpu9250)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -48,10 +48,10 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-add_message_files(
-  FILES
-  mpu6050msg.msg
-)
+#add_message_files(
+#  FILES
+#  mpu6050msg.msg
+#)
 
 ## Generate services in the 'srv' folder
 # add_service_files(

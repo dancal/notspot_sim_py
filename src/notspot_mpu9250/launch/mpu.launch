@@ -1,0 +1,7 @@
+<launch>
+
+    <node pkg="notspot_mpu6050" type="imu_ros_run.py" name="mpu6050" output="screen">
+        <param name="imu_i2c" type="string" value="0x68" />
+        <param name="imu_link" type="string" value="base_link" />
+    </node>
+</launch>

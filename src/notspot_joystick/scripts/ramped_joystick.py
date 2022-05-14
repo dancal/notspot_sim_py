@@ -6,7 +6,7 @@ from math import fabs
 from numpy import array_equal
 
 from sensor_msgs.msg import Joy
-
+from std_msgs.msg import String
 #import pygame
 #from time import sleep, time
 
@@ -15,7 +15,9 @@ class PS4_controller(object):
         rospy.init_node("Joystick_ramped")
         rospy.Subscriber("/joy", Joy, self.callback)
 
-        self.publisher = rospy.Publisher("notspot_joy/joy_ramped", Joy, queue_size = 10)
+        self.publisher_joy              = rospy.Publisher("notspot_joy/joy_ramped", Joy, queue_size = 10)
+        self.publisher_lcd_joy_state    = rospy.Publisher("notspot_lcd/joy_state", String, queue_size = 10)
+
         self.rate = rospy.Rate(rate)
 
         # target
@@ -33,7 +35,9 @@ class PS4_controller(object):
 
         self.speed_index = 2
         self.available_speeds = [1.0, 2.0, 3.0, 4.0]
-        rospy.loginfo(f"PS4 init")
+
+        rospy.loginfo(f"PS4 Joystick init")
+        self.publisher_lcd_joy_state.publish("PS4")
 
     def run(self):
         while not rospy.is_shutdown():
@@ -94,14 +98,16 @@ class PS4_controller(object):
                     if self.target_joy.axes[i] == self.last_joy.axes[i]:
                         joy.axes.append(self.last_joy.axes[i])
                     else:
-                        joy.axes.append(self.ramped_vel(self.last_joy.axes[i],
-                                self.target_joy.axes[i],self.last_send_time,t_now))
+                        joy.axes.append(self.ramped_vel(self.last_joy.axes[i],self.target_joy.axes[i],self.last_send_time,t_now))
             else:
                 joy.axes = self.last_joy.axes
 
             joy.buttons = self.target_joy.buttons
             self.last_joy = joy
-            self.publisher.publish(self.last_joy)
+
+
+            self.publisher_joy.publish(self.last_joy)
+            #self.publisher_lcd_stats.publish(self.last_joy)
 
         self.last_send_time = t_now
 
