@@ -18,7 +18,7 @@ class StandController(object):
         
         if msg.axes[7] < 0:
             state.body_local_position[0] = msg.axes[7] * 0.08
-            state.body_local_position[2] = msg.axes[7] * 0.08
+            state.body_local_position[2] = msg.axes[7] * 0.06
         else:
             state.body_local_position[0] = msg.axes[7] * -0.1
 
@@ -34,12 +34,6 @@ class StandController(object):
     def default_stance(self):
         a = np.copy(self.def_stance)
         return a
-
-        #                 FR,                              ,FL,                              ,RR                               ,RL
-        #return np.array([[self.delta_x + self.x_shift_front,self.delta_x + self.x_shift_front,-self.delta_x + self.x_shift_back,-self.delta_x + self.x_shift_back],
-        #                 [-self.delta_y                    ,self.delta_y                     ,-self.delta_y                    , self.delta_y                    ],
-        #                 [0                                ,0                                ,0                                ,0                                ]])
-
 
     def run(self,state,command):
         temp = self.default_stance
