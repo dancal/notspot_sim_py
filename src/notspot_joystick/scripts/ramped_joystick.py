@@ -2,6 +2,7 @@
 #Author: lnotspotl
 
 import rospy
+import time
 from math import fabs
 from numpy import array_equal
 
@@ -16,7 +17,7 @@ class PS4_controller(object):
         rospy.Subscriber("/joy", Joy, self.callback)
 
         self.publisher_joy              = rospy.Publisher("notspot_joy/joy_ramped", Joy, queue_size = 10)
-        self.publisher_lcd_joy_state    = rospy.Publisher("notspot_lcd/joy_state", String, queue_size = 10)
+        self.publisher_lcd_joy_speed    = rospy.Publisher("notspot_lcd/joy_speed", String, queue_size = 1)
 
         self.rate = rospy.Rate(rate)
 
@@ -33,16 +34,17 @@ class PS4_controller(object):
 
         self.use_button = True
 
-        self.speed_index = 2
-        self.available_speeds = [1.0, 2.0, 3.0, 4.0]
+        self.speed_index = 1
+        self.available_speeds = [1.0, 2.0, 3.0, 4.0, 5.0]
 
-        rospy.loginfo(f"PS4 Joystick init")
-        self.publisher_lcd_joy_state.publish("PS4")
+        rospy.loginfo(f"PS4 Joystick start")
 
     def run(self):
         while not rospy.is_shutdown():
             self.publish_joy()
             self.rate.sleep()
+
+        rospy.loginfo(f"PS4 Joystick stop")
 
     def callback(self, msg):
         if self.use_button:
@@ -58,6 +60,8 @@ class PS4_controller(object):
                     self.speed_index = 0
                 rospy.loginfo(f"Joystick speed:{self.available_speeds[self.speed_index]}")
                 self.use_button = False
+
+            self.publisher_lcd_joy_speed.publish(f"{self.available_speeds[self.speed_index]}")
 
         if not self.use_button:
             if not(msg.buttons[4] or msg.buttons[5]):
@@ -104,13 +108,10 @@ class PS4_controller(object):
 
             joy.buttons = self.target_joy.buttons
             self.last_joy = joy
-
-
             self.publisher_joy.publish(self.last_joy)
-            #self.publisher_lcd_stats.publish(self.last_joy)
 
         self.last_send_time = t_now
 
 if __name__ == "__main__":
-    joystick = PS4_controller(rate = 100)
+    joystick = PS4_controller(rate = 60)
     joystick.run()

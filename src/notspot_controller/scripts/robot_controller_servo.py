@@ -4,6 +4,7 @@
 
 from xmlrpc.client import FastMarshaller
 import rospy
+import time
 
 from sensor_msgs.msg import Joy,Imu
 from RobotController import RobotController
@@ -42,7 +43,7 @@ command_topics = ["/notspot_controller/FR1_joint/command",
 
 publishers = []
 for i in range(len(command_topics)):
-    publishers.append(rospy.Publisher(command_topics[i], Float64, queue_size = 0))
+    publishers.append(rospy.Publisher(command_topics[i], Float64, queue_size = 10))
 
 if USE_IMU:
     rospy.Subscriber("notspot_imu/base_link_orientation", Imu, notspot_robot.imu_orientation)
@@ -60,6 +61,7 @@ del USE_IMU
 #rad2deg         = 180/pi
 clock           = pygame.time.Clock()    
 while not rospy.is_shutdown():
+
     leg_positions = notspot_robot.run()
     notspot_robot.change_controller()
 
@@ -74,14 +76,22 @@ while not rospy.is_shutdown():
     try:
         # FR, FL, RR, RL
         joint_angles    = inverseKinematics.inverse_kinematics(leg_positions, dx, dy, dz, roll, pitch, yaw)
-
+    except Exception as e:
+        print('inverseKinematics = ', e)
+        pass
+    
+    try:
         for i in range(len(joint_angles)):
             publishers[i].publish(joint_angles[i])
-
-        servoControllers.move(joint_angles, notspot_robot.command)
-
-    except:
+    except Exception as e:
+        print('publishers = ', e)
         pass
 
-    clock.tick(RATE)
-    #rate.sleep()
+    try:
+        servoControllers.move(joint_angles, notspot_robot.command)
+    except Exception as e:
+        print('servoControllers = ', e)
+        pass
+
+    #clock.tick(RATE)
+    rate.sleep()

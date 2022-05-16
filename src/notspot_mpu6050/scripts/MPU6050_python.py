@@ -147,9 +147,9 @@ while not rospy.is_shutdown():
     imu_data.linear_acceleration.y  = accel_data['y']
     imu_data.linear_acceleration.z  = accel_data['z']
 
-    imu_data.orientation.x          = 2 * angle_x
-    imu_data.orientation.y          = 2 * angle_y
-    imu_data.orientation.z          = 2 * angle_z
+    imu_data.orientation.x          = angle_x
+    imu_data.orientation.y          = angle_y
+    imu_data.orientation.z          = angle_z
     imu_data.orientation.w          = 0
 
     imu_publisher.publish(imu_data)

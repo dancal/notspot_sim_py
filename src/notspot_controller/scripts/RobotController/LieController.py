@@ -3,43 +3,37 @@
 
 import rospy
 import numpy as np
+from RoboticsUtilities.Transformations import rotxyz
+from . PIDController import PID_controller
 
 class LieController(object):
     def __init__(self, default_stance):
         self.def_stance = default_stance
-        self.max_reach = 0.085
 
-        self.FR_X = 0.
-        self.FR_Y = 0.
-        self.FL_X = 0.
-        self.FL_Y = 0.
-
-    def updateStateCommand(self,msg,state,command):
-        state.body_local_position[0] = msg.axes[7] * 0.15
-        print(state.body_local_position) 
-
-        self.FR_X = msg.axes[1]
-        self.FR_Y = msg.axes[0]
-
-        self.FL_X = msg.axes[4]
-        self.FL_Y = msg.axes[3]
+        # TODO: tune kp, ki and kd
+        #                                     kp     ki    kd
+        #self.pid_controller = PID_controller(1.75, 3.29, 0.0)
+        #self.pid_controller = PID_controller(0.45, 1.29, 0.0)
+        #self.pid_controller = PID_controller(0.45, 1.29, 0.0)
+        #self.pid_controller.reset()
+        
+    def updateStateCommand(self, msg, state, command):
+        # local body position
+        print(msg.axes)
+        state.body_local_position[0] = -0.2 * 0.04
+        state.body_local_position[1] = 0
+        state.body_local_position[2] = -0.07
 
     @property
     def default_stance(self):
-        a = np.copy(self.def_stance)
-        return a
+        return self.def_stance
 
-    def run(self,state,command):
+    def step(self, state, command):
         temp = self.default_stance
         temp[2] = [command.robot_height] * 4
-        
-        temp[1][0] += self.FR_Y * self.max_reach
-        temp[0][0] += self.FR_X * self.max_reach
 
-        temp[1][1] += self.FL_Y * self.max_reach
-        temp[0][1] += self.FL_X * self.max_reach
+        return temp
 
-        # FR, FL, RR, RL
-
-        state.foot_locations = temp
+    def run(self, state, command):
+        state.foot_locations = self.step(state, command)
         return state.foot_locations
