@@ -106,7 +106,7 @@ class ServoController:
     servoMoters         = []
 
     def __init__(self):
-        print("hardware init")
+        print("servo Moter init")
         
         self.ServoKitB          = ServoKit(channels=16, address=0x40)
         self.ServoKitF          = ServoKit(channels=16, address=0x41)
@@ -158,7 +158,7 @@ class ServoController:
                 time.sleep(0.15)
 
         if self.FirstMove == True:
-            print("Position init")
+            print("Servo First Position init")
 
         self.FirstMove  = False
         
