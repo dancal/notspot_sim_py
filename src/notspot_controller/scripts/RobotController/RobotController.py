@@ -149,11 +149,6 @@ class Robot(object):
                          [-self.delta_y                    ,self.delta_y                     ,-self.delta_y                    , self.delta_y                    ],
                          [0                                ,0                                ,0                                ,0                                ]])
 
-        #                 FR,                              ,FL,                              ,RR                               ,RL
-        #return np.array([[self.delta_x + self.x_shift_front,self.delta_x + self.x_shift_front,-self.delta_x + self.x_shift_back,-self.delta_x + self.x_shift_back],
-        #                 [0                                ,0                                ,0                                ,0                                ],
-        #                 [-self.delta_y                    ,self.delta_y                     ,-self.delta_y                    , self.delta_y                    ]])
-
     @property
     def default_trotGait_stance(self):
         #                 FR,                              ,FL,                              ,RR                               ,RL

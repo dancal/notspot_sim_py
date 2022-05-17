@@ -47,7 +47,7 @@ for i in range(len(command_topics)):
 
 if USE_IMU:
     rospy.Subscriber("notspot_imu/base_link_orientation", Imu, notspot_robot.imu_orientation)
-rospy.Subscriber("notspot_joy/joy_ramped",Joy,notspot_robot.joystick_command)
+rospy.Subscriber("notspot_joy/joy_ramped", Joy, notspot_robot.joystick_command)
 
 rate = rospy.Rate(RATE)
 

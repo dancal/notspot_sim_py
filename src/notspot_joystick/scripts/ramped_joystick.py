@@ -8,6 +8,7 @@ from numpy import array_equal
 
 from sensor_msgs.msg import Joy
 from std_msgs.msg import String
+from std_msgs.msg import Float32
 #import pygame
 #from time import sleep, time
 
@@ -18,8 +19,14 @@ class PS4_controller(object):
 
         self.publisher_joy              = rospy.Publisher("notspot_joy/joy_ramped", Joy, queue_size = 10)
         self.publisher_lcd_joy_speed    = rospy.Publisher("notspot_lcd/joy_speed", String, queue_size = 1)
+        self.publisher_rgb              = rospy.Publisher('notspot_rgb/rgb_dist', Float32, queue_size = 1)
 
+        # ultrasonic
+        #rospy.Subscriber("notspot_ultrasonic/sonic_dist", Joy, self.callback_sonic)
+        
         self.rate = rospy.Rate(rate)
+
+        self.backup_joy = Joy()
 
         # target
         self.target_joy = Joy()
@@ -46,6 +53,12 @@ class PS4_controller(object):
 
         rospy.loginfo(f"PS4 Joystick stop")
 
+    def callback_sonic(self, msg):
+
+        self.target_joy.axes    = msg.axes
+        self.target_joy.buttons = msg.buttons
+
+
     def callback(self, msg):
         if self.use_button:
             if msg.buttons[4]:
@@ -67,8 +80,9 @@ class PS4_controller(object):
             if not(msg.buttons[4] or msg.buttons[5]):
                 self.use_button = True
 
-        self.target_joy.axes = msg.axes
+        self.target_joy.axes    = msg.axes
         self.target_joy.buttons = msg.buttons
+        self.backup_joy         = self.target_joy
 
     def ramped_vel(self,v_prev,v_target,t_prev,t_now):
         # This function was originally not written by me:
