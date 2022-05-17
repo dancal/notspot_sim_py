@@ -1,3 +1,29 @@
+# "Notspot" is based on spotmicroai project
+
+The MicriSpotAI has the following main components:
+
+- Raspberry Pi 4B + 
+- Raspberry Pi Camera
+- UK 831N Multi tester
+- MicroSD 32G 
+- USB wlan / NEXT-202N-MINI
+- 4 x 12A Step Down Module
+- 2 × HC-SR04P Ultrasonic sensor
+- 1 × MPU-6050 Gyro sensor
+- 1 × I2C 16x2 LCD Module
+- 7.4v Battery ( 2s2p )
+- 6 x F625ZZ
+- 2 x pca9685
+- 12 x RDS5160 servo moter
+- 20A Push button (Lock type)
+- 18AWG
+- 12V 5A Adaptor ( test )
+- 50A LED Display
+- PS4 DualShock compatible Joystick
+- XT60H +/-
+- HDMI to MICRO HDMI gender
+- IMAX B6
+
 # Notspot robot simulation - Python version
 This repository contains all the files and code needed to simulate the notspot quadrupedal robot using [Gazebo](http://gazebosim.org/)  and [ROS](https://www.ros.org/).
 The software runs on [ROS noetic](http://wiki.ros.org/noetic) and [Ubuntu 20.04](http://www.releases.ubuntu.com/20.04/). If you want to use a different ROS version, you might have to do some changes to the source code.
