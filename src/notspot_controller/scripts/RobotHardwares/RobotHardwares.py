@@ -12,14 +12,17 @@ import numpy as np
 import math
 import time
 
+# roslaunch notspot run_robot_gazebo_only.launch
+# roslaunch notspot run_robot_gazebo_real.launch
 # roslaunch notspot run_robot_real.launch
 
-# roslaunch notspot run_robot_gazebo.launch
-# roslaunch notspot run_robot_hardware.launch
+# roslaunch notspot_joystick ramped_joystick.launch
+# roslaunch notspot_joystick ramped_keyboard.launch
 
 # roslaunch notspot_mpu6050 mpu.launch
-# roslaunch notspot_joystick ramped_joystick.launch
+# roslaunch notspot_mpu9250 mpu.launch
 # roslaunch notspot_lcd lcd.launch
+# roslaunch notspot_rgb rgb.launch
 
 # apt-get install ros-noetic-joy
 # apt-get install ros-noetic-imu-tools
