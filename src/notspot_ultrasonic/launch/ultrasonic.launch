@@ -1,0 +1,5 @@
+<launch>
+
+    <node pkg="notspot_ultrasonic" type="ultrasonicnode.py" name="i2c_ultrasonic" output="screen"/>
+
+</launch>

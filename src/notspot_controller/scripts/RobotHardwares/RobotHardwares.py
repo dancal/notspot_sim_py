@@ -26,7 +26,8 @@ import time
 # pip3 install pygame
 # pip3 install adafruit-circuitpython-motor
 # pip3 install adafruit-circuitpython-servokit
-# pip install turtle==0.0.1
+# pip3 install adafruit-circuitpython-rgbled / https://github.com/adafruit/Adafruit_CircuitPython_RGBLED
+
 
 class ServoItem:
     posName     = None
@@ -70,33 +71,20 @@ class ServoItem:
 
     def moveAngle(self, angle):
         curPos                  = int(math.ceil(((self.rad2deg(angle) * self.direction) + self.defAngle)))
-        #if self.posName == "RLF":
-        #    print(self.posName, 'curPos =', curPos, 'Angle = ', self.currentPos, 'beforePos =', self.beforePos, ' == servopin == ', self.servoPin, ', angle = ', angle, 'rad2deg = ', self.rad2deg(angle))
-            #if curPos < 50:
-            #    curPos = 50
-            #if curPos > 100:
-            #    curPos = 100
-
-        #if self.posName == "RRL":
-        #    print(self.posName, 'curPos =', curPos, 'Angle = ', self.currentPos, 'beforePos =', self.beforePos, ' == servopin == ', self.servoPin, ', angle = ', angle, 'rad2deg = ', self.rad2deg(angle))
-        #    if curPos < 60:
-        #        curPos = 60
 
         self.currentPos         = curPos + self.restPos
-        if ( self.currentPos > 180 ):
-            self.currentPos     = 180
-        if ( self.currentPos < -180 ):
-            self.currentPos     = -180
+        #if ( self.currentPos > 180 ):
+        #    self.currentPos     = 180
+        #if ( self.currentPos < -180 ):
+        #    self.currentPos     = -180
 
         if self.posChange(self.currentPos) == True:
             try:
                 self.pca9685.servo[self.servoPin].angle = self.currentPos
+                #print(self.posName, 'curPos =', curPos, 'Angle = ', self.currentPos, 'beforePos =', self.beforePos, ' == servopin == ', self.servoPin, ', angle = ', angle, 'rad2deg = ', self.rad2deg(angle))
             except Exception as ex:
                 print('self.posName = ', self.posName, ', pca9685 = ', ex, ', self.currentPos = ', self.currentPos)
-            #print(self.posName, 'curPos =', curPos, 'Angle = ', self.currentPos, 'beforePos =', self.beforePos, ' == servopin == ', self.servoPin, ', angle = ', angle, 'rad2deg = ', self.rad2deg(angle))
-
-        #self.pca9685.servo[self.servoPin].angle = self.currentPos
-        #print(self.posName, 'curPos =', curPos, 'Angle = ', self.currentPos, 'beforePos =', self.beforePos, ' == servopin == ', self.servoPin, ', angle = ', angle, 'rad2deg = ', self.rad2deg(angle))
+            
         self.beforePos      =  self.currentPos
 
 # FR, FL, RR, RL
@@ -145,16 +133,16 @@ class ServoController:
         ##self.servoMoters.append( ServoItem('FLS', self.ServoKitF, 0, 90,   1, 32))     # 0
         ##self.servoMoters.append( ServoItem('FLL', self.ServoKitF, 1, 60,   1, 50))     # 1
         ##self.servoMoters.append( ServoItem('FLF', self.ServoKitF, 2, 160,  1, 5))     # 2
-##
+
         ##self.servoMoters.append( ServoItem('FRS', self.ServoKitF, 3, 90,   1, -40))     # 3
         ##self.servoMoters.append( ServoItem('FRL', self.ServoKitF, 4, 122, -1, -45))     # 4
         ##self.servoMoters.append( ServoItem('FRF', self.ServoKitF, 5, 22,  -1, -25))     # 5
-##
+
         ### REAR
         ##self.servoMoters.append( ServoItem('RLS', self.ServoKitB, 0, 90,  -1, -34))     # 6
         ##self.servoMoters.append( ServoItem('RLL', self.ServoKitB, 1, 48,   1, 45))     # 7
         ##self.servoMoters.append( ServoItem('RLF', self.ServoKitB, 2, 158,  1, 5))     # 8
-##
+
         ##self.servoMoters.append( ServoItem('RRS', self.ServoKitB, 3, 90,  -1, 30))     # 9
         ##self.servoMoters.append( ServoItem('RRL', self.ServoKitB, 4, 148, -1, -32))     # 10
         ##self.servoMoters.append( ServoItem('RRF', self.ServoKitB, 5, 22,  -1, -33))     # 11
