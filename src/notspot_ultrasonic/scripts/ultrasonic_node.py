@@ -1,74 +1,100 @@
 #!/usr/bin/env python3
 
+# sudo pip3 install adafruit-circuitpython-rgbled
+# https://github.com/mmabey/CircuitPython_HCSR04
 import RPi.GPIO as gpio
 import time
 import sys
 import signal
 import rospy
+import board
+
+import adafruit_rgbled
+from hcsr04 import HCSR04
+
 from sensor_msgs.msg import Joy
 from std_msgs.msg import Float32
 
-def signal_handler(signal, frame): # ctrl + c -> exit program
-        print('You pressed Ctrl+C!')
-        sys.exit(0)
-signal.signal(signal.SIGINT, signal_handler)
+class UltraSonic:
 
-class sonar():
-    def __init__(self):
+    sonar   = None
+    trig = 27 # 7th
+    echo = 17 # 6th
+    
+    rate    = 10
+    distance_publisher  = None
+
+    rgb_led     = None
+    setdistance = 0 
+
+    RED_LED     = board.D5
+    GREEN_LED   = board.D6
+    BLUE_LED    = board.D7
+    def __init__(self, rate):
+
         rospy.init_node('ultrasonic_node', anonymous=True)
+        rospy.loginfo(f"UltraSonic Sensor Init")
+
+        self.sonar              = HCSR04(self.trig, self.echo)
+        self.rgb_led            = adafruit_rgbled.RGBLED(self.RED_LED, self.GREEN_LED, self.BLUE_LED)
+
         self.distance_publisher = rospy.Publisher('notspot_ultrasonic/sonic_dist', Joy, queue_size=1)
-        
-        self.r = rospy.Rate(15)
+        self.rate               = rospy.Rate(rate)
 
-    def dist_sendor(self, dist):
-        joy = Joy()
+    def hex_to_rgb(self, hex):
+        return tuple(int(hex[i:i+2], 16) for i in (0, 2, 4))
 
-        joy.buttons = [1,0,0,0,0,0,0,0,0,0,0]       # rest
-        joy.axes    = [0.,0.,1.,0.,0.,1.,0.,0.]
-        
-        if dist > 10:
-            self.distance_publisher.publish(joy)
-        
+    def run(self):
+        try:
+            while not rospy.is_shutdown():
 
-gpio.setmode(gpio.BCM)
-trig = 27 # 7th
-echo = 17 # 6th
+                distance = self.sonar.getTimeCM()
 
-gpio.setup(trig, gpio.OUT)
-gpio.setup(echo, gpio.IN)
+                #This if statement wont allow the object distance to exceed the inital set distance
+                if 0 < distance < self.setdistance:
+                    pass
+                else:
+                    distance = self.setdistance
 
-sensor  = sonar()
-time.sleep(0.5)
+                if distance <= 0:
+                    self.rgb_led.color  = self.hex_to_rgb('FF0000')
+                elif distance <= 1:
+                    self.rgb_led.color  = self.hex_to_rgb('FF4500')
+                elif distance <= 2:
+                    self.rgb_led.color  = self.hex_to_rgb('FF8C00')
+                elif distance <= 3:
+                    self.rgb_led.color  = self.hex_to_rgb('FFA500')
+                elif distance <= 4:
+                    self.rgb_led.color  = self.hex_to_rgb('FFD700')
+                elif distance <= 5:
+                    self.rgb_led.color  = self.hex_to_rgb('B8860B')
+                elif distance <= 6:
+                    self.rgb_led.color  = self.hex_to_rgb('DAA520')
 
-rospy.loginfo(f"UltraSonic Sensor Init")
-try :
-    while True :
-        gpio.output(trig, False)
-        time.sleep(0.1)
-        gpio.output(trig, True)
-        time.sleep(0.00001)
-        gpio.output(trig, False)
-        while gpio.input(echo) == 0:
-            pulse_start = time.time()
-        while gpio.input(echo) == 1:
-            pulse_end = time.time()
-        pulse_duration = pulse_end - pulse_start
-        distance = pulse_duration * 17000
-        if pulse_duration >=0.01746:
-            #print('time out')
-            continue
-        elif distance > 300 or distance==0:
-            #print('out of range')
-            continue
-        distance = round(distance, 3)
+                elif distance <= 7:
+                    self.rgb_led.color  = self.hex_to_rgb('006400')
+                elif distance <= 8:
+                    self.rgb_led.color  = self.hex_to_rgb('008000')
+                elif distance <= 9:
+                    self.rgb_led.color  = self.hex_to_rgb('228B22')
+                elif distance >= 10:
+                    self.rgb_led.color  = self.hex_to_rgb('00FF00')
 
-        print ('Distance : %f cm'%distance)
-        sensor.dist_sendor(distance)
-        
-        sensor.r.sleep()
-        
-except (KeyboardInterrupt, SystemExit):
-    gpio.cleanup()
-    sys.exit(0)
-except:
-    gpio.cleanup()
+                print('cm = ', distance)
+                #print(self.sonar.dist_cm())
+                # self.led.color    = self.color
+
+                # joy = Joy()
+                # joy.buttons = [1,0,0,0,0,0,0,0,0,0,0]       # rest
+                # joy.axes    = [0.,0.,1.,0.,0.,1.,0.,0.]     # 
+                # self.distance_publisher.publish(joy)
+                self.rate.sleep()
+
+        except KeyboardInterrupt:
+            pass
+
+        sonar.deinit()
+
+if __name__ == "__main__":
+    sonic = UltraSonic(rate = 60)
+    sonic.run()

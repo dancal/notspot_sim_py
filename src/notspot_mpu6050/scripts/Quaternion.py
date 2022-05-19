@@ -47,7 +47,6 @@ THE SOFTWARE.
 """
 from math import sqrt
 
-
 class Quaternion:
     w = 0.0
     x = 0.0
