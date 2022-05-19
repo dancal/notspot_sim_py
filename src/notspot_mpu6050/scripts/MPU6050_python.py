@@ -4,8 +4,65 @@ from MPU6050 import MPU6050
 import time
 import rospy
 import tf
+import numpy as np
 from sensor_msgs.msg import Imu
 #from tf.transformations import *
+
+
+class Kalman():
+
+
+    def __init__(self):
+        self.P = np.matrix([[0., 0.],[0., 0.]])
+    def setKalmanAngle(self, angle):
+        self.State = np.matrix([[angle],[0.   ]])
+        #print('0. set initial guess: \n', self.State)
+
+    def getKalmanAngle(self, angle, gyro_rate, dt):
+        R = 0.03
+        Q = np.matrix([[0.001, 0.   ],[0.,    0.003]])
+        H = np.matrix( [1.,    0.   ])
+
+        F = np.matrix([[1., -dt],[0., 1. ]])
+        B = np.matrix([[dt],[0.]])
+        #print('F= \n', F)
+        #print('B= \n', B)
+        #print(self.State)
+        
+        #(I). State prediction
+        self.State = F * self.State + B * gyro_rate
+        #print('I. State prediction: \n', self.State)
+
+        #(II). Covariance prediction
+        self.P = F * self.P * np.transpose(F) + Q
+        #print('II. Covariance prediction P: \n', self.P)
+
+        #(III). Innovation
+        I = angle - H * self.State
+        #print('III. Innovation I: \n', I)
+
+        #(IV). Innovation covariance S
+        S = H * self.P * np.transpose(H) + R
+        #print('IV. Innovation covariance S: \n', S)
+
+        #(V). Kalman gain KG
+        KG = self.P * np.transpose(H) / S
+        #print('V. Kalman Gain: \n', KG)
+
+        #(VI). Update state
+        self.State = self.State + KG * I
+        #print('VI. Update State: \n', self.State)
+
+        #(VII). Update covariance
+        self.P = (np.eye(2) - KG * H) * self.P
+        #print('VII. Update Covariance P: \n', self.P)
+
+        return self.State.item(0)
+
+#X = Kalman()
+#X.setKalmanAngle(30)
+#x1 = X.getKalmanAngle(30, 2, 0.01)
+#print(x1)
 
 if __name__ == "__main__":
     rospy.init_node("notspot_mpu6050")
@@ -44,10 +101,19 @@ if __name__ == "__main__":
     # mpu.calibrateMPU6500()
     # print(self.gbias)
     # print(self.abias)
+    Roll = Kalman()
+    Pitch = Kalman()
+    Yaw = Kalman()
 
+    Roll.setKalmanAngle(0)
+    Pitch.setKalmanAngle(0)
+    Yaw.setKalmanAngle(0.)
 
     FIFO_buffer = [0]*64
     rate = rospy.Rate(10)
+    #make initial guesses
+    #time_pre = time.time()
+
     try:
         while not rospy.is_shutdown():
             try:
@@ -75,6 +141,8 @@ if __name__ == "__main__":
                 acc             = mpu.get_acceleration()
                 gyro            = mpu.get_rotation()
 
+                # DMP_get_quaternion
+
                 #  attitude = ahrs.filters.Madgwick(acc=acc_data, gyr=gyro_data)
                 accVal          = [acc[0]/16384.0, acc[1]/16384.0, acc[2]/16384.0]
                 gryoVal         = [gyro[0]/16.384, gyro[1]/16.384, gyro[2]/16.384]
@@ -82,6 +150,10 @@ if __name__ == "__main__":
                 #print("\r %s"%(str_show),end='')
 
                 quaternion      = tf.transformations.quaternion_from_euler(roll_pitch_yaw.x, roll_pitch_yaw.y, roll_pitch_yaw.z)
+
+	            # R = Roll.getKalmanAngle(get_roll(ax, ay, az), gx, dt)
+	            # #print('Roll: \t', R)
+	            # P = Pitch.getKalmanAngle(get_pitch(ax, ay, az), gy, dt)
 
                 # covariance matrix
                 imu_data    = Imu()
@@ -106,6 +178,7 @@ if __name__ == "__main__":
 
                 pub.publish(imu_data)
 
+                #time_pre = time.time()
                 rate.sleep()
                 #rospy.loginfo(roll_pitch_yaw.x)
 
