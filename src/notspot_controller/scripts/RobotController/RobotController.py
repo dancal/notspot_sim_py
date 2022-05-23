@@ -20,22 +20,22 @@ class Robot(object):
         self.body = body
         self.legs = legs
 
-        self.delta_x            = self.body[0] * 0.45
-        self.delta_y            = self.body[1] * 0.45 + self.legs[1]
-        self.x_shift_front      = 0.075
-        self.x_shift_back       = -0.07
-        self.default_height     = 0.16
+        self.delta_x            = self.body[0] * 0.39
+        self.delta_y            = self.body[1] * 0.39 + self.legs[1]
+        self.x_shift_front      = 0.06
+        self.x_shift_back       = -0.08
+        self.default_height     = 0.15
 
         self.publisher_lcd_state    = rospy.Publisher("notspot_lcd/state", String, queue_size = 1)
 
-        self.trotGaitController     = TrotGaitController(self.default_stance, stance_time = 0.18, swing_time = 0.3, time_step = 0.02, use_imu = imu)
+        self.trotGaitController     = TrotGaitController(self.default_stance, stance_time = 0.18, swing_time = 0.25, time_step = 0.019, use_imu = imu)
         self.crawlGaitController    = CrawlGaitController(self.default_stance, stance_time = 0.55, swing_time = 0.45, time_step = 0.02)
         self.standController        = StandController(self.default_stance)
 
         self.restController         = RestController(self.default_stance)
         self.lieController          = LieController(self.default_stance)
 
-        self.currentController      = self.lieController
+        self.currentController      = self.restController
         self.state                  = State(self.default_height)
         self.state.foot_locations   = self.default_stance
         self.command                = Command(self.default_height)

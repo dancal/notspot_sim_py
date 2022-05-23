@@ -150,7 +150,7 @@ class ServoController:
         # FRONT
         self.servoMoters.append( ServoItem('FLS', self.ServoKitF, 0, 90,   1, 5))     # 0
         self.servoMoters.append( ServoItem('FLL', self.ServoKitF, 1, 60,   1, 50))     # 1
-        self.servoMoters.append( ServoItem('FLF', self.ServoKitF, 2, 160,  1, 10))     # 2
+        self.servoMoters.append( ServoItem('FLF', self.ServoKitF, 2, 160,  1, 20))     # 2
 
         self.servoMoters.append( ServoItem('FRS', self.ServoKitF, 3, 90,   1, -10))     # 3
         self.servoMoters.append( ServoItem('FRL', self.ServoKitF, 4, 122, -1, -45))     # 4
@@ -170,7 +170,7 @@ class ServoController:
     def moveFirst(self):
         for i in range(len(self.servoMoters)):
             self.servoMoters[i].moveLieAngle()
-            time.sleep(0.1)
+            time.sleep(0.05)
 
         time.sleep(2)
 
@@ -178,7 +178,7 @@ class ServoController:
 
         for i in range(len(self.servoMoters)):
             self.servoMoters[i].moveAngle(joint_angles[i])
-            time.sleep(0.1)
+            #time.sleep(0.1)
         
 if __name__ == "__main__":
     ps4 = ServoController()
