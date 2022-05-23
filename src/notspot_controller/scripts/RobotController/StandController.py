@@ -17,8 +17,8 @@ class StandController(object):
     def updateStateCommand(self,msg,state,command):
         
         if msg.axes[7] < 0:
-            state.body_local_position[0] = msg.axes[7] * 0.08
-            state.body_local_position[2] = msg.axes[7] * 0.06
+            state.body_local_position[0] = msg.axes[7] * 0.7
+            state.body_local_position[2] = msg.axes[7] * 0.8
         else:
             state.body_local_position[0] = msg.axes[7] * -0.1
 
@@ -45,8 +45,6 @@ class StandController(object):
 
         temp[1][1] += self.FL_Y * self.max_reach
         temp[0][1] += self.FL_X * self.max_reach
-            
-        state.foot_locations = temp
 
         # FR, FL, RR, RL
         #print([command.robot_height], temp)

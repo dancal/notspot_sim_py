@@ -2,18 +2,19 @@
 
 # sudo pip3 install adafruit-circuitpython-rgbled
 # https://github.com/mmabey/CircuitPython_HCSR04
-import RPi.GPIO as gpio
+import RPi.GPIO as GPIO
 import time
 import sys
 import signal
 import rospy
 import board
+import numpy as np
 
-import adafruit_rgbled
-from hcsr04 import HCSR04
+import adafruit_hcsr04
+#from hcsr04 import HCSR04
 
 from sensor_msgs.msg import Joy
-from std_msgs.msg import Float32
+from std_msgs.msg import String
 
 class UltraSonic:
 
@@ -27,73 +28,87 @@ class UltraSonic:
     rgb_led     = None
     setdistance = 0 
 
-    RED_LED     = board.D5
-    GREEN_LED   = board.D6
-    BLUE_LED    = board.D7
+    def led_on(self, pin):
+        gpio.setmode(gpio.BOARD)
+        gpio.setup(pin, gpio.OUT)
+
+        gpio.output(pin, True)
+
+    def led_off(pin):
+        gpio.setmode(gpio.BOARD)
+        gpio.setup(pin, gpio.OUT)
+
+        gpio.cleanup(pin)
+
     def __init__(self, rate):
 
         rospy.init_node('ultrasonic_node', anonymous=True)
         rospy.loginfo(f"UltraSonic Sensor Init")
 
-        self.sonar              = HCSR04(self.trig, self.echo)
-        self.rgb_led            = adafruit_rgbled.RGBLED(self.RED_LED, self.GREEN_LED, self.BLUE_LED)
+        self.sonarL             = adafruit_hcsr04.HCSR04(trigger_pin=board.D16, echo_pin=board.D19)
+        self.sonarR             = adafruit_hcsr04.HCSR04(trigger_pin=board.D20, echo_pin=board.D21)
 
+        self.rgb_publisher      = rospy.Publisher('notspot_rgb/rgb_dist', String, queue_size=1)
         self.distance_publisher = rospy.Publisher('notspot_ultrasonic/sonic_dist', Joy, queue_size=1)
+        
         self.rate               = rospy.Rate(rate)
 
     def hex_to_rgb(self, hex):
         return tuple(int(hex[i:i+2], 16) for i in (0, 2, 4))
 
     def run(self):
+
+        # LEFT SONA
         try:
+            distance            = 100
+            Mode                = False
             while not rospy.is_shutdown():
 
-                distance = self.sonar.getTimeCM()
-
-                #This if statement wont allow the object distance to exceed the inital set distance
-                if 0 < distance < self.setdistance:
+                try:
+                    distance1   = self.sonarL.distance
+                    distance2   = self.sonarR.distance
+                    distance    = np.min([distance1, distance2])
+                except:
                     pass
+                    
+                if distance <= 10:
+                    Mode        = True
+                    for i in range(3):
+                        joy         = Joy()
+                        back_step   = -1
+                        #joy.buttons = [0,0,1,0,0,0,0,0,0,0,0]
+                        joy.axes    = [0.,0,0.,0.,0,0.,0.,back_step]
+                        self.distance_publisher.publish(joy)
+                        time.sleep(0.2)
+
+                if distance > 50 and Mode == True:
+                    joy         = Joy()
+                    #joy.buttons = [1,0,0,0,0,0,0,0,0,0,0]
+                    joy.axes    = [0.,0,0.,0.,0,0.,0.,0.]
+                    self.distance_publisher.publish(joy)
+                    Mode    = False
+
+                #print(distance)
+
+                if distance <= 10:
+                    self.rgb_publisher.publish('FF0000')
+                elif distance <= 20:
+                    self.rgb_publisher.publish('0000FF')
+                elif distance <= 30:
+                    self.rgb_publisher.publish('00FF00')
+                elif distance <= 40:
+                    self.rgb_publisher.publish('FFFF00')
+                elif distance <= 50:
+                    self.rgb_publisher.publish('00BFFF')
+                elif distance <= 60:
+                    self.rgb_publisher.publish('FF9900')
                 else:
-                    distance = self.setdistance
+                    self.rgb_publisher.publish('FFFFFF')
 
-                if distance <= 0:
-                    self.rgb_led.color  = self.hex_to_rgb('FF0000')
-                elif distance <= 1:
-                    self.rgb_led.color  = self.hex_to_rgb('FF4500')
-                elif distance <= 2:
-                    self.rgb_led.color  = self.hex_to_rgb('FF8C00')
-                elif distance <= 3:
-                    self.rgb_led.color  = self.hex_to_rgb('FFA500')
-                elif distance <= 4:
-                    self.rgb_led.color  = self.hex_to_rgb('FFD700')
-                elif distance <= 5:
-                    self.rgb_led.color  = self.hex_to_rgb('B8860B')
-                elif distance <= 6:
-                    self.rgb_led.color  = self.hex_to_rgb('DAA520')
-
-                elif distance <= 7:
-                    self.rgb_led.color  = self.hex_to_rgb('006400')
-                elif distance <= 8:
-                    self.rgb_led.color  = self.hex_to_rgb('008000')
-                elif distance <= 9:
-                    self.rgb_led.color  = self.hex_to_rgb('228B22')
-                elif distance >= 10:
-                    self.rgb_led.color  = self.hex_to_rgb('00FF00')
-
-                print('cm = ', distance)
-                #print(self.sonar.dist_cm())
-                # self.led.color    = self.color
-
-                # joy = Joy()
-                # joy.buttons = [1,0,0,0,0,0,0,0,0,0,0]       # rest
-                # joy.axes    = [0.,0.,1.,0.,0.,1.,0.,0.]     # 
-                # self.distance_publisher.publish(joy)
-                self.rate.sleep()
+                time.sleep(0.1)
 
         except KeyboardInterrupt:
             pass
-
-        sonar.deinit()
 
 if __name__ == "__main__":
     sonic = UltraSonic(rate = 60)

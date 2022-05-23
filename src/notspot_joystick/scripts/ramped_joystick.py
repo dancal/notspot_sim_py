@@ -19,10 +19,10 @@ class PS4_controller(object):
 
         self.publisher_joy              = rospy.Publisher("notspot_joy/joy_ramped", Joy, queue_size = 10)
         self.publisher_lcd_joy_speed    = rospy.Publisher("notspot_lcd/joy_speed", String, queue_size = 1)
-        self.publisher_rgb              = rospy.Publisher('notspot_rgb/rgb_dist', Float32, queue_size = 1)
+        #self.publisher_rgb              = rospy.Publisher('notspot_rgb/rgb_dist', Float32, queue_size = 1)
 
         # ultrasonic
-        #rospy.Subscriber("notspot_ultrasonic/sonic_dist", Joy, self.callback_sonic)
+        rospy.Subscriber("notspot_ultrasonic/sonic_dist", Joy, self.callback_sonic)
         
         self.rate = rospy.Rate(rate)
 
@@ -41,7 +41,7 @@ class PS4_controller(object):
 
         self.use_button = True
 
-        self.speed_index = 1
+        self.speed_index = 2
         self.available_speeds = [1.0, 2.0, 3.0, 4.0, 5.0]
 
         rospy.loginfo(f"PS4 Joystick start")
@@ -56,8 +56,8 @@ class PS4_controller(object):
     def callback_sonic(self, msg):
 
         self.target_joy.axes    = msg.axes
-        self.target_joy.buttons = msg.buttons
-
+        #self.target_joy.buttons = msg.buttons
+        self.publish_joy()
 
     def callback(self, msg):
         if self.use_button:
@@ -123,7 +123,7 @@ class PS4_controller(object):
             joy.buttons = self.target_joy.buttons
             self.last_joy = joy
             self.publisher_joy.publish(self.last_joy)
-
+            
         self.last_send_time = t_now
 
 if __name__ == "__main__":

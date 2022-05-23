@@ -20,22 +20,22 @@ class Robot(object):
         self.body = body
         self.legs = legs
 
-        self.delta_x            = self.body[0] * 0.5
-        self.delta_y            = self.body[1] * 0.5 + self.legs[1]
-        self.x_shift_front      = 0.008
-        self.x_shift_back       = -0.04
-        self.default_height     = 0.15
+        self.delta_x            = self.body[0] * 0.45
+        self.delta_y            = self.body[1] * 0.45 + self.legs[1]
+        self.x_shift_front      = 0.075
+        self.x_shift_back       = -0.07
+        self.default_height     = 0.16
 
         self.publisher_lcd_state    = rospy.Publisher("notspot_lcd/state", String, queue_size = 1)
 
-        self.trotGaitController     = TrotGaitController(self.default_stance, stance_time = 0.26, swing_time = 0.24, time_step = 0.02, use_imu = imu)
+        self.trotGaitController     = TrotGaitController(self.default_stance, stance_time = 0.18, swing_time = 0.3, time_step = 0.02, use_imu = imu)
         self.crawlGaitController    = CrawlGaitController(self.default_stance, stance_time = 0.55, swing_time = 0.45, time_step = 0.02)
         self.standController        = StandController(self.default_stance)
 
-        self.lieController          = LieController(self.default_stance)
         self.restController         = RestController(self.default_stance)
-        
-        self.currentController      = self.restController
+        self.lieController          = LieController(self.default_stance)
+
+        self.currentController      = self.lieController
         self.state                  = State(self.default_height)
         self.state.foot_locations   = self.default_stance
         self.command                = Command(self.default_height)
@@ -126,43 +126,8 @@ class Robot(object):
 
     def imu_orientation(self,msg):
         q = msg.orientation
-        rpy_angles = tf.transformations.euler_from_quaternion([q.x,q.y,q.z,q.w])
-        self.state.imu_roll     = rpy_angles[0]
-        self.state.imu_pitch    = rpy_angles[1]
-        print('rpy_angles=', rpy_angles)
-
-        # orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
-        # linear_acceleration
-        # angular_velocity
-        #rpy_angles = tf.transformations.euler_from_quaternion([q.x,q.y,q.z,q.w])
-        #self.state.imu_roll = rpy_angles[0]
-        #self.state.imu_pitch = rpy_angles[1]
-        #self.state.imu_roll = q.x
-        #self.state.imu_pitch = q.y
-
-        # None
-        # rpy_angles= (0.0005984700709411604, 0.005235679411140057, -0.0016590353742991784)
-        # rpy_angles= (0.0005993580510755736, 0.00523535610401267, -0.0016596577658183008)
-        # rpy_angles= (0.0006002456941323063, 0.005235032470537327, -0.0016602805879939802)
-
-        # Right
-        #rpy_angles= (0.06913512139945624, -0.014799836058811895, 0.013579090832045526)
-        #rpy_angles= (0.06913565671324759, -0.014798509750779447, 0.013583737265416396)
-        #rpy_angles= (0.06913619166810156, -0.014797184761385489, 0.013588383041694959)
-        # Left
-        #rpy_angles= (-0.18990422743629182, -0.008851821292948191, 0.009087492436355702)
-        #rpy_angles= (-0.18990271149239166, -0.00884808095229375, 0.009089295303220233)
-        #rpy_angles= (-0.1899011966053448, -0.008844342787192006, 0.009091097065168141)
-
-        # Front Down
-        #rpy_angles= (0.01350870715159488, 0.19861207481063764, 0.016167582627254852)
-        #rpy_angles= (0.013508468161615706, 0.1986139798970741, 0.0161656979233706)
-        #rpy_angles= (0.013508229284027083, 0.19861588391202964, 0.016163813093002723)
-
-        # Rear Down
-        #rpy_angles= (0.0026309815450587712, -0.17620387442458826, 0.011415160450937094)
-        #rpy_angles= (0.002632293765070901, -0.17620502390516904, 0.011415803576638822)
-        #rpy_angles= (0.0026336058783212914, -0.1762061733661644, 0.011416445656898035)
+        self.state.imu_roll     = q.x
+        self.state.imu_pitch    = q.y
 
     def run(self):
         return self.currentController.run(self.state, self.command)

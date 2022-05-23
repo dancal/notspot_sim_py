@@ -20,9 +20,21 @@ class LieController(object):
     def updateStateCommand(self, msg, state, command):
         # local body position
         print(msg.axes)
-        state.body_local_position[0] = -0.2 * 0.04
+        state.body_local_position[0] = -0.9 * 0.03
         state.body_local_position[1] = 0
-        state.body_local_position[2] = -0.07
+        #state.body_local_position[2] = -0.097
+        state.body_local_position[2] = -0.107
+
+        # local body position
+        #state.body_local_position[0] = -1.1 * 0.03
+        #state.body_local_position[1] = msg.axes[6] * 0.03
+        #state.body_local_position[2] = msg.axes[1] * 0.03
+
+        # local body orientation
+        #state.body_local_orientation[0] = msg.axes[0] * 0.3
+        #state.body_local_orientation[1] = msg.axes[4] * 0.3
+        #state.body_local_orientation[2] = -msg.axes[3] * 0.05
+
 
     @property
     def default_stance(self):

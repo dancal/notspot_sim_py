@@ -8,9 +8,7 @@ import numpy as np
 from sensor_msgs.msg import Imu
 #from tf.transformations import *
 
-
 class Kalman():
-
 
     def __init__(self):
         self.P = np.matrix([[0., 0.],[0., 0.]])
@@ -71,19 +69,29 @@ if __name__ == "__main__":
     i2c_bus = 1
     device_address = 0x68
 
-    x_accel_offset = int(-841)
-    y_accel_offset = int(1794)
-    z_accel_offset = int(3206)
-    x_gyro_offset = int(26)
-    y_gyro_offset = int(28)
-    z_gyro_offset = int(26)
+    x_accel_offset = int(-1947.1937499999988)
+    y_accel_offset = int(-3587.76125)
+    z_accel_offset = int(-517.7015000000005)
+    x_gyro_offset = int(-146.4505625)
+    y_gyro_offset = int(-32.14981249999992)
+    z_gyro_offset = int(21.907249999999973)
 
-    # x_avg_read: 0.08 x_avg_offset: 926.423499999996
-    # y_avg_read: -0.72 y_avg_offset: 2136.152999999997
-    # z_avg_read: 0.34 z_avg_offset: -856.0713749999996
-    # x_avg_read: 0.16 x_avg_offset: 35.570499999999996
-    # y_avg_read: -0.07 y_avg_offset: -8.081437499999883
-    # z_avg_read: -0.01 z_avg_offset: -28.00306249999999
+    #x_avg_read: 684.76 x_avg_offset: -1628.91225
+    #y_avg_read: 1436.4 y_avg_offset: -3390.4574999999995
+    #z_avg_read: 211.12 z_avg_offset: -519.4865000000003
+
+    #x_avg_read: 58.51 x_avg_offset: -131.9548125
+    #y_avg_read: 13.16 y_avg_offset: -29.24875
+    #z_avg_read: -9.31 z_avg_offset: 20.897812500000004
+
+    #x_avg_read: -0.26 x_avg_offset: -1711.2001250000003
+    #y_avg_read: -0.3 y_avg_offset: -3590.031374999994
+    #z_avg_read: -0.2 z_avg_offset: -527.3312500000011
+
+    #x_avg_read: 0.21 x_avg_offset: -146.85118750000032
+    #y_avg_read: -0.08 y_avg_offset: -32.400249999999936
+    #z_avg_read: 0.23 z_avg_offset: 23.181937500000004
+
 
     enable_debug_output = False
     mpu = MPU6050(i2c_bus, device_address, x_accel_offset, y_accel_offset,z_accel_offset, x_gyro_offset, y_gyro_offset, z_gyro_offset,enable_debug_output)
@@ -98,24 +106,29 @@ if __name__ == "__main__":
     FIFO_count = mpu.get_FIFO_count()
     print(FIFO_count)
 
-    # mpu.calibrateMPU6500()
+    #mpu.calibrateMPU6500()
     # print(self.gbias)
     # print(self.abias)
-    Roll = Kalman()
-    Pitch = Kalman()
-    Yaw = Kalman()
-
-    Roll.setKalmanAngle(0)
-    Pitch.setKalmanAngle(0)
-    Yaw.setKalmanAngle(0.)
+    #Roll = Kalman()
+    #Pitch = Kalman()
+    #Yaw = Kalman()
+    #Roll.setKalmanAngle(0)
+    #Pitch.setKalmanAngle(0)
+    #Yaw.setKalmanAngle(0.)
 
     FIFO_buffer = [0]*64
     rate = rospy.Rate(10)
     #make initial guesses
     #time_pre = time.time()
 
+    bActive     = False
+    mpu.reset_FIFO()
+    #print('AVG = ', roll_pitch_yaw_x, roll_pitch_yaw_y, roll_pitch_yaw_z)
     try:
+        Count   = 0
         while not rospy.is_shutdown():
+            Count += 1
+
             try:
                 FIFO_count = mpu.get_FIFO_count()
                 mpu_int_status = mpu.get_int_status()
@@ -125,7 +138,7 @@ if __name__ == "__main__":
             # If overflow is detected by status or fifo count we want to reset
             if (FIFO_count == 1024) or (mpu_int_status & 0x10):
                 mpu.reset_FIFO()
-                print('overflow!')
+                #print('overflow!')
             # Check if fifo data is ready
             elif (mpu_int_status & 0x02):
                 # Wait until packet_size number of bytes are ready for reading, default
@@ -142,39 +155,49 @@ if __name__ == "__main__":
                 gyro            = mpu.get_rotation()
 
                 # DMP_get_quaternion
-
                 #  attitude = ahrs.filters.Madgwick(acc=acc_data, gyr=gyro_data)
                 accVal          = [acc[0]/16384.0, acc[1]/16384.0, acc[2]/16384.0]
                 gryoVal         = [gyro[0]/16.384, gyro[1]/16.384, gyro[2]/16.384]
-                #str_show = "roll: %.2f  pitch: %.2f  yaw: %.2f        "%(roll_pitch_yaw.x,roll_pitch_yaw.y,roll_pitch_yaw.z)
-                #print("\r %s"%(str_show),end='')
+                
+                #roll_pitch_yaw.z    -= 5.01
+                roll_pitch_yaw.x    = round(roll_pitch_yaw.x * 0.01, 1)
+                roll_pitch_yaw.y    = round(roll_pitch_yaw.y * 0.01, 1)
+                roll_pitch_yaw.z    = round(roll_pitch_yaw.z * 0.01, 1)
 
-                quaternion      = tf.transformations.quaternion_from_euler(roll_pitch_yaw.x, roll_pitch_yaw.y, roll_pitch_yaw.z)
+                if Count < 200:
+                    time.sleep(0.1)
+                    continue
+
+                #print('roll_pitch_yaw.x = ', roll_pitch_yaw.x, ', roll_pitch_yaw.y = ', roll_pitch_yaw.y)
+
+                #str_show = "roll: %.2f  pitch: %.2f  yaw: %.2f        "%(roll_pitch_yaw.x,roll_pitch_yaw.y,roll_pitch_yaw.z)
+                #print("\r %s"%(str_show))
+                #quaternion      = tf.transformations.quaternion_from_euler(roll_pitch_yaw.x, roll_pitch_yaw.y, roll_pitch_yaw.z)
 
 	            # R = Roll.getKalmanAngle(get_roll(ax, ay, az), gx, dt)
 	            # #print('Roll: \t', R)
 	            # P = Pitch.getKalmanAngle(get_pitch(ax, ay, az), gy, dt)
 
                 # covariance matrix
-                imu_data    = Imu()
-                imu_data.header.stamp = rospy.Time.now()
+                imu_data                        = Imu()
+                imu_data.header.stamp           = rospy.Time.now()
 
-                imu_data.orientation_covariance[0] = -1
-                imu_data.angular_velocity_covariance[0] = -1
-                imu_data.linear_acceleration_covariance[0] = -1
+                #imu_data.orientation_covariance[0] = -1
+                #imu_data.angular_velocity_covariance[0] = -1
+                #imu_data.linear_acceleration_covariance[0] = -1
 
-                imu_data.angular_velocity.x     = gryoVal[0]
-                imu_data.angular_velocity.y     = gryoVal[1]
-                imu_data.angular_velocity.z     = gryoVal[2]
+                #imu_data.angular_velocity.x     = gryoVal[0]
+                #imu_data.angular_velocity.y     = gryoVal[1]
+                #imu_data.angular_velocity.z     = gryoVal[2]
 
-                imu_data.linear_acceleration.x  = accVal[0]
-                imu_data.linear_acceleration.y  = accVal[1]
-                imu_data.linear_acceleration.z  = accVal[2]
+                #imu_data.linear_acceleration.x  = accVal[0]
+                #imu_data.linear_acceleration.y  = accVal[1]
+                #imu_data.linear_acceleration.z  = accVal[2]
 
-                imu_data.orientation.x          = quaternion[0]
-                imu_data.orientation.y          = quaternion[1]
-                imu_data.orientation.z          = quaternion[2]
-                imu_data.orientation.w          = quaternion[3]
+                imu_data.orientation.x          = roll_pitch_yaw.x
+                imu_data.orientation.y          = roll_pitch_yaw.y
+                #imu_data.orientation.z          = quaternion[2]
+                #imu_data.orientation.w          = quaternion[3]
 
                 pub.publish(imu_data)
 
