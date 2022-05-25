@@ -127,5 +127,5 @@ class PS4_controller(object):
         self.last_send_time = t_now
 
 if __name__ == "__main__":
-    joystick = PS4_controller(rate = 60)
+    joystick = PS4_controller(rate = 30)
     joystick.run()

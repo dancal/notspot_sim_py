@@ -105,11 +105,12 @@ class UltraSonic:
                 else:
                     self.rgb_publisher.publish('FFFFFF')
 
+                self.rate.sleep()
                 time.sleep(0.1)
 
         except KeyboardInterrupt:
             pass
 
 if __name__ == "__main__":
-    sonic = UltraSonic(rate = 60)
+    sonic = UltraSonic(rate = 30)
     sonic.run()

@@ -89,11 +89,10 @@ class RgbSensor:
         #print('msg = ', msg, ', color = ', self.color)
 
     def run(self):
-        rate = rospy.Rate(60)
         while not rospy.is_shutdown():
-            time.sleep(0.3)
+            time.sleep(0.15)
             self.rate.sleep()
 
 if __name__ == "__main__":
-    rgbLed = RgbSensor(rate = 60)
+    rgbLed = RgbSensor(rate = 30)
     rgbLed.run()

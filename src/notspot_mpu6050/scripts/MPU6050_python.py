@@ -147,17 +147,17 @@ if __name__ == "__main__":
                     FIFO_count = mpu.get_FIFO_count()
 
                 FIFO_buffer     = mpu.get_FIFO_bytes(packet_size)
-                accel           = mpu.DMP_get_acceleration_int16(FIFO_buffer)
+                #accel           = mpu.DMP_get_acceleration_int16(FIFO_buffer)
                 quat            = mpu.DMP_get_quaternion_int16(FIFO_buffer)
                 grav            = mpu.DMP_get_gravity(quat)
                 roll_pitch_yaw  = mpu.DMP_get_euler_roll_pitch_yaw(quat, grav)
-                acc             = mpu.get_acceleration()
-                gyro            = mpu.get_rotation()
+                #acc             = mpu.get_acceleration()
+                #gyro            = mpu.get_rotation()
 
                 # DMP_get_quaternion
                 #  attitude = ahrs.filters.Madgwick(acc=acc_data, gyr=gyro_data)
-                accVal          = [acc[0]/16384.0, acc[1]/16384.0, acc[2]/16384.0]
-                gryoVal         = [gyro[0]/16.384, gyro[1]/16.384, gyro[2]/16.384]
+                #accVal          = [acc[0]/16384.0, acc[1]/16384.0, acc[2]/16384.0]
+                #gryoVal         = [gyro[0]/16.384, gyro[1]/16.384, gyro[2]/16.384]
                 
                 #roll_pitch_yaw.z    -= 5.01
                 roll_pitch_yaw.x    = round(roll_pitch_yaw.x * 0.01, 1)
@@ -168,31 +168,9 @@ if __name__ == "__main__":
                     time.sleep(0.1)
                     continue
 
-                #print('roll_pitch_yaw.x = ', roll_pitch_yaw.x, ', roll_pitch_yaw.y = ', roll_pitch_yaw.y)
-
-                #str_show = "roll: %.2f  pitch: %.2f  yaw: %.2f        "%(roll_pitch_yaw.x,roll_pitch_yaw.y,roll_pitch_yaw.z)
-                #print("\r %s"%(str_show))
-                #quaternion      = tf.transformations.quaternion_from_euler(roll_pitch_yaw.x, roll_pitch_yaw.y, roll_pitch_yaw.z)
-
-	            # R = Roll.getKalmanAngle(get_roll(ax, ay, az), gx, dt)
-	            # #print('Roll: \t', R)
-	            # P = Pitch.getKalmanAngle(get_pitch(ax, ay, az), gy, dt)
-
                 # covariance matrix
                 imu_data                        = Imu()
                 imu_data.header.stamp           = rospy.Time.now()
-
-                #imu_data.orientation_covariance[0] = -1
-                #imu_data.angular_velocity_covariance[0] = -1
-                #imu_data.linear_acceleration_covariance[0] = -1
-
-                #imu_data.angular_velocity.x     = gryoVal[0]
-                #imu_data.angular_velocity.y     = gryoVal[1]
-                #imu_data.angular_velocity.z     = gryoVal[2]
-
-                #imu_data.linear_acceleration.x  = accVal[0]
-                #imu_data.linear_acceleration.y  = accVal[1]
-                #imu_data.linear_acceleration.z  = accVal[2]
 
                 imu_data.orientation.x          = roll_pitch_yaw.x
                 imu_data.orientation.y          = roll_pitch_yaw.y
